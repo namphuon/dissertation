@@ -1,0 +1,430 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%  disstemplate.tex, to be compiled with latex.		     %
+%%  08 April 2002	Version 4				     %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%								     %
+%%  Writing a Doctoral Dissertation with LaTeX at		     %
+%%	the University of Texas at Austin			     %
+%%								     %
+%%  (Modify this ``template'' for your own dissertation.)	     %
+%%								     %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\documentclass[12pt]{report}	% The documentclass must be ``report''.
+
+\usepackage{utdiss2}  		% Dissertation package style file.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Optional packages used for this sample dissertation. If you don't  %
+% need a capability in your dissertation, feel free to comment out   %
+% the package usage command.					     %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\usepackage{amsmath,amsthm,amsfonts,amscd} 
+				% Some packages to write mathematics.
+\usepackage{eucal} 	 	% Euler fonts
+\usepackage{graphicx} 	 	% Euler fonts
+\usepackage{epstopdf}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{verbatim}      	% Allows quoting source with commands.
+\usepackage{makeidx}       	% Package to make an index.
+\usepackage{psfig}         	% Allows inclusion of eps files.
+\usepackage{epsfig}         	% Allows inclusion of eps files.
+%\usepackage{hyperref}         	% 
+\usepackage{url}		% Allows good typesetting of web URLs.
+\usepackage{citesort}         	% 
+\usepackage{draftcopy}		% Uncomment this line to have the
+				% word, "DRAFT," as a background
+				% "watermark" on all of the pages of
+				% of your draft versions. When ready
+				% to generate your final copy, re-comment
+				% it out with a percent sign to remove
+				% the word draft before you re-run
+				% Makediss for the last time.
+
+\author{Nam-phuong Duc Nguyen}  	% Required
+
+\address{3438 Shiraz Loop\\ Round Rock, Texas 78665}  % Required
+
+\title{Families of Hidden Markov Models and their applications to phylogenetics and metagenomics}
+% Required
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% NOTICE: The total number of supervisors and other members %%%%%%%%%%
+%%%%%%%%%%%%%%% MUST be seven (7) or less! If you put in more, %%%%%%%
+%%%%%%%%%%%%%%% they are put on the page after the Committee %%%%%%%%%
+%%%%%%%%%%%%%%% Certification of Approved Version page. %%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% Enter names of the supervisor and co-supervisor(s), if any,
+% of your dissertation committee. Put one name per line with
+% the name in square brackets. The name on the last line, however,
+% must be in curly braces.
+%
+% If you have only one supervisor, the entry below will read:
+%
+%	\supervisor
+%		{Supervisor's Name}
+%
+% NOTE: Maximum three supervisors. Minimum one supervisor.
+% NOTE: The Office of Graduate Studies will accept only two supervisors!
+% 
+%
+\supervisor
+	{Tandy Warnow}	
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% Enter names of the other (non-supervisor) members(s) of your
+% dissertation committee. Put one name per line with the name
+% in square brackets. The name on the last line, however, must
+% be in curly braces.
+%
+% NOTE: Maximum six other members. Minimum zero other members.
+% NOTE: The Office of Graduate Studies may restrict you to a total
+%	of six committee members.
+%
+%
+\committeemembers	
+	[Joydeep Ghosh]
+	[Raymond Mooney]
+  [Keshav Pingali]
+	[Mihai Pop]
+  {Shibu Yooseph}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\previousdegrees{B.S.,M.S.}
+     % The abbreviated form of your previous degree(s).
+     % E.g., \previousdegrees{B.S., MBA}.
+     %
+     % The default value is `B.S., M.S.'
+
+\graduationmonth{August}      
+     % Graduation month, either May, August, or December, in the form
+     % as `\graduationmonth{May}'. Do not abbreviate.
+     
+     % The default value (either May, August, or December) is guessed
+     % according to the time of running LaTeX.
+
+\graduationyear{2014}   
+     % Graduation year, in the form as `\graduationyear{2001}'.
+     % Use a 4 digit (not a 2 digit) number.
+     
+     % The default value is guessed according to the time of 
+     % running LaTeX.
+
+\typist{the author}       
+     % The name(s) of typist(s), put `the author' if you do it yourself.
+     % E.g., `\typist{Maryann Hersey and the author}'.
+     %
+     % The default value is `the author'.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Commands for master's theses and reports.			     %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% If the degree you're seeking is NOT Doctor of Philosophy, uncomment
+% (remove the % in front of) the following two command lines (the ones
+% that have the \ as their second character).
+%
+%\degree{MASTER OF ARTS}
+%\degreeabbr{M.A.}
+
+% Uncomment the line below that corresponds to the type of master's
+% document you are writing.
+%
+%\masterreport
+%\masterthesis
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Some optional commands to change the document's defaults.	     %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%\singlespacing
+%\oneandonehalfspacing
+
+%\singlespacequote
+\oneandonehalfspacequote
+
+\topmargin 0.125in	% Adjust this value if the PostScript file output
+			% of your dissertation has incorrect top and 
+			% bottom margins. Print a copy of at least one
+			% full page of your dissertation (not the first
+			% page of a chapter) and measure the top and
+			% bottom margins with a ruler. You must have
+			% a top margin of 1.5" and a bottom margin of
+			% at least 1.25". The page numbers must be at
+			% least 1.00" from the bottom of the page.
+			% If the margins are not correct, adjust this
+			% value accordingly and re-compile and print again.
+			%
+			% The default value is 0.125"
+
+		% If you want to adjust other margins, they are in the
+		% utdiss2-nn.sty file near the top. If you are using
+		% the shell script Makediss on a Unix/Linux system, make
+		% your changes in the utdiss2-nn.sty file instead of
+		% utdiss2.sty because Makediss will overwrite any changes
+		% made to utdiss2.sty.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Some optional commands to be tested.				     %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% If there are 10 or more sections, 10 or more subsections for a section,
+% etc., you need to make an adjustment to the Table of Contents with the
+% command \longtocentry.
+%
+%\longtocentry 
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%	Some math support.					     %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%	Theorem environments (these need the amsthm package)
+%
+%% \theoremstyle{plain} %% This is the default
+
+\newtheorem{thm}{Theorem}[section]
+\newtheorem{cor}[thm]{Corollary}
+\newtheorem{lem}[thm]{Lemma}
+\newtheorem{prop}[thm]{Proposition}
+\newtheorem{ax}{Axiom}
+
+\theoremstyle{definition}
+\newtheorem{defn}{Definition}[section]
+
+\theoremstyle{remark}
+\newtheorem{rem}{Remark}[section]
+\newtheorem*{notation}{Notation}
+
+%\numberwithin{equation}{section}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%	Macros.							     %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%	Here some macros that are needed in this document:
+
+
+\newcommand{\latexe}{{\LaTeX\kern.125em2%
+                      \lower.5ex\hbox{$\varepsilon$}}}
+                      
+\newcommand{\hmmer}{HMMER}
+\newcommand{\pplacer}{pplacer}
+\newcommand{\epa}{EPA}
+\newcommand{\papara}{PaPaRa}
+\newcommand{\ssa}{$a$}
+\newcommand{\ssp}{$p$}
+%\newcommand{\jk}[2]{$#1 \forwardslash #2$}
+\newcommand{\mc}[3]{\multicolumn{#1}{#2}{#3}}
+\newcommand{\keyw}[1]{{\bf #1}}
+                      
+
+\newcommand{\amslatex}{\AmS-\LaTeX{}}
+
+\chardef\bslash=`\\	% \bslash makes a backslash (in tt fonts)
+			%	p. 424, TeXbook
+
+\newcommand{\cn}[1]{\texttt{\bslash #1}}
+\newcommand{\sate}{SAT\'{e}}
+
+\makeatletter		% Starts section where @ is considered a letter
+			% and thus may be used in commands.
+\def\square{\RIfM@\bgroup\else$\bgroup\aftergroup$\fi
+  \vcenter{\hrule\hbox{\vrule\@height.6em\kern.6em\vrule}%
+                                              \hrule}\egroup}
+\makeatother		% Ends sections where @ is considered a letter.
+			% Now @ cannot be used in commands.
+
+\makeindex    % Make the index
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%		The document starts here.			     %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+\sloppy
+\copyrightpage          % Produces the copyright page.
+
+
+%
+% NOTE: In a doctoral dissertation, the Committee Certification page
+%		(with signatures) is BEFORE the Title page.
+%	In a masters thesis or report, the Signature page
+%		(with signatures) is AFTER the Title page.
+%
+%	If you are writing a masters thesis or report, you MUST REVERSE
+%	the order of the \commcertpage and \titlepage commands below.
+%
+\commcertpage           % Produces the Committee Certification
+			%   of Approved Version page (doctoral)
+			%   or Signature page (masters).
+			%		20 Mar 2002	cwm
+
+\titlepage              % Produces the title page.
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Dedication and/or epigraph are optional, but must occur here.      %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+\begin{dedication}
+\index{Dedication@\emph{Dedication}}%
+Dedicated to my loved ones.  Fill this out.
+\end{dedication}
+
+
+\begin{acknowledgments}% Optional
+\index{Acknowledgments@\emph{Acknowledgments}}%
+I wish to thank the multitudes of people who helped me.   
+\end{acknowledgments}
+
+
+% The abstract is required. Note the use of ``utabstract'' instead of
+% ``abstract''! This was necessary to fix a page numbering problem.
+% The abstract heading is generated automatically.
+% Do NOT use \begin{abstract} ... \end{abstract}.
+
+\utabstract
+\index{Abstract}%
+\indent
+
+Generating a multiple sequence alignment (MSA) from 
+a set of unaligned sequences is an important step in
+estimating the evolutionary relationship between
+different species.  The MSA can be used to infer homologies
+between the different sequences, and from these homologies,
+a phylogeny representing the evolutionary history of the species can be inferred.
+
+In the situation where an MSA has
+already been estimated on a set of sequences (called ``backbone alignment), new sequences (called ``query sequences) can be inserted into the MSA using a profile Hidden Markov Models (HMM), removing the need to re-estimate the MSA on the full set of sequences from scratch.  The basic algorithm for profile HMM alignment estimation is to compute an HMM from the backbone alignment, and then align the query sequences independently to the HMM, which in turn, defines an alignment of the query sequences to the backbone alignment.  I will show, however, that this technique suffers when the backbone alignment contains very evolutionarily divergent
+sequences~\ref{Mirarab2012}.  
+
+In this dissertation, I present a new machine learning technique called families of HMMs (fHMMs) that address this problem.  By using multiple HMMs instead of a single HMM to represent a backbone alignment, query sequences can be more accurately aligned to the backbone alignment.  I apply the fMMs to three different domains: phylogenetic placement, taxonomic profiling and identification, and MSA estimation.  In phylogenetic placement, the problem addressed is how to insert a query sequence into an existing phylogeny.  In taxonomic identification and profiling, the problem addressed is how to taxonomically classification a query sequence, and how to estimate a taxonomic profile on a set of sequences.  Finally, in MSA estimation, the problem is how to estimate an MSA on a set of sequences.
+
+For each domain, I present a software pipeline that implements the fMMs that specifically addresses problems in the domain: SEPP for phylogenetic placement, TIPP for taxonomic profiling and identification, and UPP for MSA estimation.  I present simulation experiments to show that the fHMMs approaches result in improved accuracy compared to the single HMM approaches.  I show that SEPP results in more accurate phylogenetic placements compared to existing placement methods, and is more computationally efficient, both in memory and running time.  I show that TIPP more accurately classifies novel sequences, and estimates more accurate taxonomic profiles than leading methods on metagenomic datasets.  Finally, I show how UPP estimates ``de novo'' alignments, and is more accurate and efficient than than existing alignment methods.  I show that UPP can estimate a very accurate alignment on a dataset with 1,000,000 sequences in less than 2 days on a machine with 12 processors.
+
+\tableofcontents   % Table of Contents will be automatically
+                   % generated and placed here.
+
+\listoftables      % List of Tables and List of Figures will be placed
+\listoffigures     % here, if applicable.
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Actual text starts here.					     %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% Including external files for each chapter makes this document simpler,
+% makes each chapter simpler, and allows for generating test documents
+% with as few as zero chapters (by commenting out the include statements).
+% This allows quicker processing by the Makediss command file in case you
+% are not working on a specific, long and slow to compile chapter. You
+% can even change the chapter order by merely interchanging the order
+% of the include statements (something I found helpful in my own
+% dissertation).
+%
+% \include{chapter-introduction}
+% \include{chapter-instructions}
+% \include{chapter-howtouse}
+% \include{chapter-makingbib}
+% \include{chapter-tables+figs}
+% \include{chapter-math}
+\include{introduction}
+\include{background}
+\include{hmmfamily}
+\include{sepp}
+\include{tipp}
+\include{upp}
+\include{conclusion}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Appendix/Appendices                                                %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% If you have only one appendix, use the command \appendix instead
+% of \appendices.
+%
+\appendices
+\index{Appendices@\emph{Appendices}}%
+
+\include{appendix-tipp}
+\include{appendix-upp}
+%\include{chapter-appendix2}
+%\include{chapter-appendix3}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Generate the bibliography.					     %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%								     %
+% NOTE: For master's theses and reports, NOTHING is permitted to     %
+%	come between the bibliography and the vita. The command      %
+%	to generate the index (if used) MUST be moved to before      %
+%	this section.						     %
+%								     %
+%\nocite{*}      % This command causes all items in the 		     %
+                % bibliographic database to be added to 	     %
+                % the bibliography, even if they are not 	     %
+                % explicitly cited in the text. 		     %
+		%						     %
+\bibliographystyle{plain}  % Here the bibliography 		     %  
+\bibliography{namphuon}        % is inserted.			     %
+\index{Bibliography@\emph{Bibliography}}%			     %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Generate the index.						     %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%								     %
+% NOTE: For master's theses and reports, NOTHING is permitted to     %
+%	come between the bibliography and the vita. This section     %
+%	to generate the index (if used) MUST be moved to before      %
+%	the bibliography section.				     %
+%								     %
+\printindex%    % Include the index here. Comment out this line      %
+%		% with a percent sign if you do not want an index.   %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Vita page.							     %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{vita}
+Nam-phuong Nguyen was born in Long Beach, California on 17 December 1981, the son of Manh Nguyen and Mai-phuong Nguyen.  He received the Bachelor of Science and Bachelor of Math degree from the University of Utah in 2004.  He worked at Global Aerospace for two years before deciding to head back to school for this Masters in Computer Science at the University of Utah in 2007.  There, he began work with Dr. Chris Myers on the simulation of genetic circuits and published his first paper, ``The Design of the Genetic Muller C-element''.  After completing his Masters degree in 2009, he began his Ph.D. at the University of Texas at Austin.  
+% Craig William McCluskey
+% was born in Minneapolis, Minnesota on 20 May 1950, the son of
+% Dr. William R. McCluskey and Lucilla W. McCluskey.  He received the Bachelor
+% of Science degree in Engineering from the California Institute of Technology
+% and was commissioned an Officer in the United States Air Force in 1971.
+% He entered active duty in October, 1971, and was stationed in Denver, Colorado,
+% Colorado Springs, Colorado, Panama City, Florida, and Sacramento, California.
+% He separated from the USAF in 1975 and worked as an engineer for several small
+% electronics companies in California before moving to Colorado Springs, Colorado
+% to work for Hewlett-Packard in 1979. He left Hewlett-Packard in 1989 and joined
+% a small company based in Herndon, Virginia, working out of his house as a
+% ``remote'' engineer designing parts of the Alexis satellite for Los Alamos
+% National Laboratories. Laid off when his portion of the satellite was
+% completed, he applied to the University of Texas at Austin for enrollment
+% in their physics program. He was accepted and started graduate studies in
+% August, 1991.
+
+\end{vita}
+
+\end{document}

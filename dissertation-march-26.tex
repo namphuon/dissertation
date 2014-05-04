@@ -1,0 +1,187 @@
+%
+%  $Description: Author guidelines and sample document in LaTeX 2.09$ 
+%
+%  $Author: ienne $
+%  $Date: 1995/09/15 15:20:59 $
+%  $Revision: 1.4 $
+%
+
+\documentclass[times, 10pt]{article} 
+%\usepackage{latex8}
+\usepackage{times}
+\usepackage{subfigure}
+\usepackage{graphicx}
+\usepackage{rotating}
+\usepackage{color}
+\usepackage{tabularx}
+\usepackage{float}
+\usepackage{algorithm2e}
+\usepackage{amsmath}
+
+%\documentstyle[times,art10,twocolumn,latex8]{article}
+\newcommand{\sate}{SAT\'{e}}
+
+%------------------------------------------------------------------------- 
+% take the % away on next line to produce the final camera-ready version 
+\pagestyle{empty}
+
+%------------------------------------------------------------------------- 
+\begin{document}
+
+\title{Fast and Accurate Alignment and Phylogeny Estimation Methods for Large Datasets}
+
+\maketitle
+\thispagestyle{empty}
+\pagestyle{plain}
+\begin{center}
+\section*{Abstract}
+\end{center}
+Advances in sequencing technology has resulted in an explosion of biological information.  While thousands of species have been sequenced, many more have not.  As more and more species are sequenced, the challenge of determining the \emph{phylogeny}, evolutionary history between different species, becomes more difficult.  The most ambitious of the phylogenetic projects is the Tree of Life, with an eventual goal of estimating a phylogeny on all living organisms.  New efficient computational methods will be necessary to aid in this goal.
+
+%A typical phylogenetic study begins by first collecting the sequences of the species in question.  Next, an alignment is estimated from the sequences.  Finally, a phylogeny is estimated from the estimated alignment.  The methods used for each step work well when the datasets are of reasonable size.  However, advances in sequencing technology has made sequencing genomes much easier.  Thus, there is a need for more scalable alignment estimation methods and phylogeny estimation methods.
+
+%Current next generation sequencing technologies can produce millions of short reads from a single study.  These reads are typically assembled into a full length sequence, but, this is not always feasible.  In the case where assembly is not possible, analysis of the short reads different techniques for phylogenetic analysis because traditional methods assume that the sequence data are full length sequences.  Analyzing mixed datasets containing both fragmentary sequences as well as full length sequences may not be feasible with traditional methods due to computational reasons (possibly millions of fragments) and model violations (methods assume full length sequences).
+
+One change due to next generation sequencing (NGS) technology is the rise of mixed datasets, datasets containing both short reads and full length sequences.  Mixed datasets can occur whenever short reads produced by NGS cannot be assembled into full length sequences.  This is a common occurrence in \emph{metagenomic} analyses.  In metagenomic analyses, the genetic material from an environmental sample is directly sequenced.  The output of a metagenomic study is short reads coming from various species residing in the sample.  Without the ability to identify the species of the short read, it is difficult to assemble the short reads into full length sequences.
+
+One approach to analyze mixed datasets is through \emph{phylogenetic placement}.  The input to phylogenetic placement methods is a backbone alignment and tree and a set of query sequences.  The output is the ``best" placement of each query sequence into the backbone tree.  The placement can be used to identify the species of the query sequence, but also yields more information, such as the evolutionary relationship between the query sequence and all other sequences in the backbone tree.%Most phylogenetic placement methods operate in two steps.  First, compute an extended alignment by aligning the query sequence to the backbone alignment.  Second, use the extended alignment to compute the optimal placement of the query sequence into the backbone tree.
+
+For my dissertation, I will present research making advances on large-scale alignment estimation, large-scale phylogeny estimation, and taxon identification, with particular attention to analyses of fragmentary sequences.
+My contributions will be in the following areas:
+
+\begin{itemize}
+\item \textbf{Alignment masking}. Masking is the removal of entire sites believed to be in error from an alignment.  The hope is that estimating trees from masked alignments will result in better trees than estimating trees from unmasked alignments.  I present research that shows masking methods can be detrimental to phylogeny estimation, and masking methods only improve tree estimation on poor alignments, and rarely (if ever) is helpful when the alignment is relatively accurate.  In those cases where masking does improve phylogeny estimation, the improvements are very minor.  Thus, masking methods should be applied with considerable care, if at all.  Included in this paper is "Comparison of different methods for masking alignments", by Nguyen, N., C. R. Linder, and T. Warnow. This manuscript is to be submitted.
+\item \textbf{Supertree estimation}.  The supertree estimation problem is estimating a single tree on all the taxa from a collection of source trees (each tree does not necessarily need to contain all the taxa).  A typical example is estimating a single tree from a collection of gene trees.  I present research on MRL, a new optimality criterion, for supertree estimation.  Our results shows a strong correlation between MRL and tree estimation accuracy over other current popular criteria.  We present SuperFine+MRP(TNT), a new method supertree method that solves MRL and other supertree criteria well, results in very accurate trees, and is very fast.  Included in this paper is "MRL and SuperFine+MRL: new supertree methods", by Nguyen, N., S. Mirarab, and T. Warnow. This appeared in Journal Algorithms for Molecular Biology 7:3, 2012, a special issue for the Programme in Phylogenetics, held at the Sir Isaac Newton Institute in Cambridge University.
+\item \textbf{Phylogenetic Placement}.  The phylogenetic placement problem is finding the ``best" placement of a query sequence (typically a short read) into a phylogenetic tree.  The evolutionary relationship between the query sequence and the remaining sequences can be inferred from the placement.  I present SEPP, a new divide-and-conquer method for phylogenetic placement that is more computationally efficient and more accurate than existing methods for very large and difficult datasets.  Included in this paper is "SEPP: SAT\'{e}-Enabled Phylogenetic Placement", by Mirarab, S., N. Nguyen, and T. Warnow. This paper was presented at Pacific Symposium on Biocomputing in 2012.
+\item \textbf{Taxon Identification}. The taxon identification problem is finding the taxonomic classification of a query sequence (typically a short read).  This is a fundamental step in metagenomic analyses.  I present TIPP, a new method that uses SEPP to obtain higher sensitivity than the leading methods.  This is collaborative work with Mihai Pop and Bo Liu from University of Maryland.
+\item \textbf{Ultra-large alignment estimation}. The ultra-large alignment estimation problem is estimating an alignment on a very large dataset (can be more than $>$100k sequences).  Ultra-large alignment methods may play an important role estimating the Tree of Life.  I will explore different methods to estimate ultra-large alignments.  In particular, I will present UPP, a new method that uses SEPP for ultra-large alignments.  This is preliminary research to be completed this year.
+\end{itemize}
+
+\section{Background}
+\emph{Phylogenetics} is the study of the evolutionary relationship between different organisms.  The output of a phylogenetic study is a \emph{phylogeny}, or the evolutionary history of the different organisms through time.  A simple representation of a phylogeny is a tree.  Each internal node in the tree represents a speciation event, one species giving rise to new lineages of species.  The leaves of the phylogeny represents current species, both extant and extinct.  Typically, the goal in a phylogenetic study is to reconstruct the phylogeny given the leaves.
+
+The pipeline in a typical phylogenetic study begins by first collecting the biomolecular sequences (DNA, RNA, or protein) of the species in question.  Next, a \emph{multiple sequence alignment} is estimated from the sequences.  The alignment is a hypothesis about the \emph{homology}, or shared evolutionary history, between the sequences.  From the alignment, a phylogeny can be estimated.  
+
+The increasing size of the data, in terms of the number of sequences, presents new challenges in the pipeline.  Previous Sanger shotgun sequencing technology produced very long reads that were assembled into a full length sequences by examining the regions of overlap.  Next generation sequencing (NGS) technologies uses different processes to create millions of short reads very rapidly.  This process is performed in parallel, allowing very fast sequencing of entire genomes.  Thus, the number of sequences in a phylogenetic study can be very large as more and more genomes are being sequenced.
+
+One downside of NGS is the shortness of the reads.  Since NGS reads are shorter than Sanger reads, assembly is more difficult, and sometimes, may not be possible due to insufficient coverage of the genome, insufficient overlap of the reads, or the source of the reads is unknown.  This leads to mixed datasets, datasets containing both full length sequences and short reads.  Mixed dataset are difficult to analyze using traditional approaches.  Mixed datasets may violate the assumptions of traditional alignment and phylogeny estimation tools.  In addition, mixed datasets may contain millions of reads making traditional tools computationally infeasible. Modifications of existing algorithms are necessary to be able to analyze mixed datasets efficiently and accurately.
+
+An example of when mixed datasets arise is in \emph{metagenomic} studies.  In a metagenomic study, the genetic material are taken directly from the environment and sequenced.  The short reads come from the various known and unknown species in the sample.  Without knowing the source species from which the read originated from, assembly is very difficult.  One of the fundamental steps in a metagenomic study is to identify the taxa of the reads.  This is known as the \emph{taxonomic identification problem}.  %The goal is to find the taxonomic classification of each short read.
+
+Phylogenetic placement is one method for analyzing mixed datasets.  The phylogenetic placement takes as input a set of query sequences (short reads or full length sequences) and a backbone alignment and tree.  The output is the optimal placement of each query sequence into the backbone tree.  Phylogenetic placement typically has two steps.  First, align the query sequence to the backbone alignment.  Second, use the extended alignment to place the query sequence into the backbone tree.  The placement of the query sequence is a hypothesis of the evolutionary relationship between the query sequence and the remaining sequences in the backbone tree.  The placement of the query sequence can be used to for taxonomic identification, among other uses.%Thus, a phylogenetic placement method is defined by what tool is used to estimate the extended alignment and what tool is used to place the query sequence.  Each query sequence is placed independently, so phylogenetic placement methods grows linearly in the number of query sequences.  
+
+%Current extended alignment tools include HMMALIGN~\cite{Eddy1998} and PaPaRa~\cite{Berger2011}, and current placement tools include Pplacer~\cite{Matsen2010a}
+
+% Existing phylogenetic placement methods (~\cite{Matsen2010a},) perform well when the backbone tree contains sequences of closely related species, and is reasonably sized.  However, as the diameter of the backbone tree increases, and the 
+
+\section{Current Contributions}
+My main goal is to develop more efficient and accurate phylogenetic placement method and apply it to taxonomic identification and to ultra-large alignment estimation.  A list of my contributions made while following this goal is listed below.
+
+\subsection{Masking}
+In~\cite{nguyen2012masking}, C. Randy Linder, Tandy Warnow, and I explore whether masking, the removal of entire sites believed to be in error from an alignment, results in better trees than unmasked alignments.  Below is an abstract of our paper.  This work is to be submitted.
+
+Generating a multiple sequence alignment (MSA) from a set of unaligned sequences is an important step in estimating the evolutionary history between taxa.  Quite commonly, ``masking" techniques are used to identify and remove unreliable sites in an MSA before the phylogeny estimation step, in the hope that removing these sites will improve phylogenetic accuracy. Here, we present the results of a study of four masking methods--Gblocks, trimAl, Noisy, and BMGE--focusing  on   the impact  on the topology  of trees estimated using RAxML, one of the popular methods for maximum likelihood tree estimation. Our study shows that masking  often reduces accuracy instead of improving tree estimation, and that most masking methods only give improvements for long, compact alignments on small numbers of taxa.  In addition, our study shows that the topologically most accurate trees are obtained through using the best alignment methods and then not masking at all, or masking only when there are very long sequences using Noisy. Thus, the currently available masking methods yield improvements in tree estimation only under unusual circumstances, and these improvements tend to be small. In other words, current masking methods offer little benefit for phylogeny estimation, and are often detrimental.
+
+\subsection{SuperFine+MRL}
+In~\cite{Nguyen2012}, Siavash Mirarab, Tandy Warnow, and I explore whether optimizing a different criterion for the supertree estimation problem results in more accurate trees.  Below is the abstract of our paper.  This appeared in Journal Algorithms for Molecular Biology 7:3, 2012, a special issue for the Programme in Phylogenetics, held at the Sir Isaac Newton Institute in Cambridge University.
+
+Supertree methods combine trees on subsets of the full taxon set together 
+to produce a tree on the entire set of taxa.  
+Of the many supertree methods, the most popular is MRP 
+(Matrix Representation with Parsimony), a method that operates by first 
+encoding the input set of source trees by a large matrix (the ``MRP matrix") 
+over $\{0,1,?\}$, and then running maximum parsimony heuristics on the MRP matrix.   
+Experimental studies evaluating MRP in comparison to other supertree methods 
+have established that for large datasets, MRP generally produces trees of equal or 
+greater accuracy than other methods, and can run on larger datasets.   
+A recent development in supertree methods is SuperFine+MRP, a method that combines MRP with a 
+divide-and-conquer approach, and produces more accurate trees in less time than MRP.  
+In this paper we consider a new approach for supertree estimation, called MRL (Matrix Representation with Likelihood).  
+MRL begins with the same MRP matrix, but then analyzes the MRP matrix using heuristics (such as RAxML) for 2-state Maximum Likelihood.  
+
+We compare MRP and SuperFine+MRP with MRL and SuperFine+MRL on simulated and biological datasets.  We examine how well each method solves MRP and MRL on a wide range of datasets, as well as the resulting topological accuracy of the trees.  
+Our experimental results show that MRL, coupled with a very good ML heuristic such as RAxML, produces more accurate trees than MRP.  We demonstrate that in general MRL scores are more strongly correlated to topological accuracy than MRP scores.  
+
+SuperFine+MRP, combined with a good MRP heuristic such as TNT, is among the best methods to solve MRP and MRL, while being generally faster and more topologically accurate than other supertree methods.  
+
+\subsection{SEPP}
+In~\cite{Mirarab2012}, Siavash Mirarab, Tandy Warnow, and I presented SEPP (SAT\'{e}-enabled Phylogenetic Placement), a new approach for phylogenetic placement that results in more accurate placements, but requires less memory and less running time than leading placement methods.  Below is the abstract of our paper.  This paper was presented at Pacific Symposium on Biocomputing in 2012.
+
+We address the problem of Phylogenetic Placement, in which the objective is to insert short molecular sequences (called query sequences) into an existing phylogenetic tree and alignment on full-length sequences for the same gene. Phylogenetic placement has the potential to provide information beyond pure ``species identification" (i.e., the association of metagenomic reads to existing species), because it can also give information about the evolutionary relationships between these query sequences and to known species. Approaches for phylogenetic placement have been developed that operate in two steps: first, an alignment is estimated for each query sequence to the alignment of the full-length sequences, and then that alignment is used to find the optimal location in the phylogenetic tree for the query sequence. Recent methods of this type include HMMALIGN+EPA, HMMALIGN+pplacer, and PaPaRa+EPA. We report on a study evaluating phylogenetic placement methods on biological and simulated data. This study shows that these methods have extremely good accuracy and computational tractability under conditions where the input contains a highly accurate alignment and tree for the full-length sequences, and the set of full-length sequences is sufficiently small and not too evolutionarily diverse; however, we also show that under other conditions accuracy declines and the computational requirements for memory and time exceed acceptable limits. We present SEPP, a general “boosting” technique to improve the accuracy and/or speed of phylogenetic placement techniques. The key algorithmic aspect of this booster is a dataset decomposition technique in SAT\'{e}, a method that utilizes an iterative divide-and-conquer technique to co-estimate alignments and trees on large molecular sequence datasets. We show that SAT\'{e}-boosting improves HMMALIGN+pplacer, placing short sequences more accurately when the set of input sequences h as a large evolutionary diameter and produces placements of comparable accuracy in a fraction of the time for easier cases. SEPP software and the datasets used in this study are all available for free at \emph{http://www.cs.utexas.edu/users/phylo/software/sepp/submission}.
+
+\section{TIPP}
+I am currently developing TIPP, a modification of SEPP applied to the realm of taxonomic identification.  This is joint work with Siavash Mirarab and Tandy Warnow.  We are also collaborating with Mihai Pop and Bo Liu from University of Maryland.  Below is a brief summary of our current work.
+
+An estimated 99\% of all microbes cannot be cultured in a laboratory. Metagenomic analyses circumvent this problem by sequencing organisms directly from the environment.  The typical output of a metagenomic analysis is millions of short fragmentary reads from various species in the sample.  Identifying the species of each read is a fundamental challenge for metagenomic analysis.
+
+We present a new method, TIPP, for the taxonomic identification of short reads.  TIPP takes as input a set of backbone alignment and trees, a set of short reads, a taxonomy, and statistical support thresholds for alignment and classification, and the output is the taxonomic identification of each short read.  The taxonomic identification is performed through phylogenetic placement, where each read is aligned to the backbone alignment and then placed into the taxonomic tree.  To prevent overclassification, TIPP takes the into account the uncertainty in the backbone alignment and tree, the uncertainty in the alignment of the short reads, and the uncertainty in the placement into the taxonomy.
+
+We compare TIPP versus Metaphyler~\cite{Liu2011}, the leading method for taxonomic identification, on a dataset of 30 marker genes.  Short reads, with error, are simulated from the full length sequences.  The difficulty in taxonomic identification is not in classification of reads whose full length sequences are in the reference dataset, rather reads from unknown full length sequences i.e. reads from an undiscovered organism.  Therefore, leave-out validation is used to compare the performances of these methods.  For each short read, we exclude all full length sequences belonging to the same species from the reference dataset.   We examine how well each method can still classify the read at the higher taxonomic levels.  So while it is impossible to correctly the species of the read for the leave-out species experiments, the genus, family, order, class, and phylum can still be correctly classified.  We measure the percentage of reads that are classified correctly, incorrectly, or left unclassified at each level.  This experiment is repeated, removing larger portions of related organisms (leave-out genus, leave-out family, and so forth).
+
+Figure~\ref{fig:tipp_metaphyler} shows preliminary results comparing TIPP and Metaphyler on 29 marker genes.  Each row is the leave out level, and each column represents the level of classification.  For example, the first row, last column represents the results of classifying the reads at the phylum level when we remove all full length sequences belonging to the same species as the read.  As more and more data is being removed from the reference set, classification becomes more difficult.  The results show TIPP outperforms Metaphyler, classifying more fragments correctly, at the cost of classifying a few more fragments incorrectly at the most specific levels.  However, at the more general levels, TIPP tends to have as equivalent or less FP as Metaphyler.
+
+\begin{figure}[htbp]
+  %\begin{center}
+    \includegraphics[scale=.45]{tipp_metaphyler.pdf}
+  %\end{center}
+  
+  \caption{\label{fig:tipp_metaphyler}Leave-out classification results comparing TIPP versus Metaphyler for Illumina 100bp reads averaged over 29 marker genes.  Each row represents a different leave left out, each column represents the classification results for a specific level.  Thus, the chart in the second row, second column represents the percentage of reads classified correctly, incorrectly, and left unclassified at the family level when we remove all full length sequences that belong to the same genus as the read.}
+\end{figure}
+
+\section{Proposed Work}
+
+%\subsection{Masking}
+
+\subsection{Improving SEPP}
+SEPP, in its current form, is too slow for the phylogenetic placement of millions of reads.  I will examine different decompositions of SEPP to boost the computational efficiency of SEPP.  One of the key bottlenecks in SEPP is determining the best alignment of the short read.  I will explore a different variant of SEPP, SEPP*, that searches for the best alignment set using a greedy search of the hierarchical decompositions generated by SEPP, thus reducing the search space.
+
+I will compare SEPP* with SEPP on the same simulated and biological datasets used in~\cite{Mirarab2012}.  I will measure accuracy, running time, and memory costs.  The goal is to develop a new variant that has comparable accuracy, but runs more efficiently.
+
+\subsection{TIPP on biological datasets}
+While the full length sequences used to validate TIPP comes from real biological genes, the short reads were generated through simulation.  In addition, the genes used are known as \emph{marker genes}, genes believed to rarely undergo duplication or horizontal gene transfer events.  However, 16S, one of the most common genes used for taxonomic identification, is not a marker gene.  Thus, it is vital that TIPP is tested on a real metagenomic dataset and on non-marker genes such as 16S.  
+
+To validate TIPP on real metagenomic datasets, we will run TIPP on Human Microbiome Project Metagenomes (HMP) Mock Pilot~\cite{mockcommunity}.  The HMP Mock Pilot is a series of metagenomic datasets where the populations of the microbial species is roughly known.  Real metagenomic reads are procured from these datasets.  The goal for any taxonomic identifier method is to estimate population profiles that match the estimated values.  Thus, while the taxon is unknown for the fragments, the estimated abundance of each taxa is known, and taxonomic identifiers should report similar profiles.  The Mock Pilot contains reads from both 16S genes and from marker genes.  
+
+In order for TIPP to work with non-marker genes, full length sequences and the taxonomy of the sequences must be procured for the genes.  I will use the full length 16S sequences and taxonomy from the RDP database~\cite{Cole2009}.  I will explore the differences between the population profiles estimated from 16S reads and from marker genes.  The goal is to show that TIPP can classify both simulated and biological reads accurately, quickly, and efficiently on real metagenomic datasets on both marker and non-marker genes.
+
+\subsection{Ultra-large alignment estimation}
+Ultralarge alignment methods take a different approach to estimating alignments on very large datasets.  Rather than allowing the alignment to grow as more and more sequences are added, these methods start by estimating a backbone alignment on a subset of the sequences.  Next, the remaining sequences, called query sequences, are aligned to the backbone alignment.  This fixes the number of sites in the final alignment, which in turn, reduces memory requirements.  The alignment of each query sequence is independent of any other query sequence alignment, resulting in a running time that is linear in the number of query sequences.  By reducing the memory and running time to be linear in the number of short reads, ultra-large alignment methods can be run on very large datasets.  How the backbone alignment is estimated, as well as how the alignments of the query sequences are estimated can have a large impact on the overall accuracy of the final alignment.  
+
+I propose a new method UPP, a modification of SEPP for the use of ultra-large alignment estimation.  I will design a simulation study to explore the different parameter options for using UPP to align full length sequences.  These choices include:
+
+\begin{itemize}
+\item \textbf{Selection of backbone sequences}.  The choice for the set of sequences to be used in the backbone alignment will play an important role in the accuracy of the final alignment.  If the sequences are selected poorly, there will be insufficient coverage of the phylogeny, resulting in poor alignments of query sequences that are not closely related to any sequence in the backbone alignment.
+\item \textbf{Decomposition size}.  The choice of the size of the subproblems will result in a trade-off between speed and accuracy of the alignment.  Finding the optimal decomposition size that maximizes both will be critical.
+\item \textbf{Generation of backbone alignment}.  I will examine two different methods for estimating the backbone alignment: MAFFT~\cite{Katoh2002} and SAT\'{e}~\cite{Liu2012}.
+\end{itemize}
+
+I will compare UPP against two of the leading methods for estimating ultralarge alignments, NAST\cite{DeSantis2006} and SILVA ALIGNER\cite{Pruesse2007} on several biological (Gutell RNA sequences, ranging from 6K-28K number of sequences~\cite{GutellData}) and a very large simulated dataset (Price 78K dataset~\cite{Price2010}).  I will measure the alignment error for each alignment method.  I will also measure the tree error from trees estimated from the alignments for each method.  I will also be tracking the running time and memory for each method.  My goal is to develop an ultra-large alignment method that is faster than current methods and can scale to extremely large datasets.
+
+% \subsection{Dissertation Timeline}
+% My proposed timeline for completing my dissertation and research is shown in Figure~\ref{fig:timeline}.
+% \begin{figure}[htbp]
+%   \begin{center}
+%     \includegraphics[scale=.45]{timeline_xfig}
+%   \end{center}
+%   
+%   \caption{\label{fig:timeline}Timeline for graduation.}
+% \end{figure}
+
+\subsection{Dissertation Outline}
+My dissertation will have the following chapters:
+\begin{itemize}
+\item Chapter 1 will present background and introduction to computational phylogenetics.
+\item Chapter 2 will present existing work in phylogenetics, emphasizing work in phylogenetic placement, metagenomics, taxonomic identification, and ultra-large alignments.
+\item Chapter 3 will discuss my contributions on a comparative study of masking methods.  
+\item Chapter 4 will discuss my contributions on a new optimization criterion for supertree estimation.  
+\item Chapter 5 will discuss my contributions of SEPP and introduce the framework and outline of SEPP.  I will also present the design study evaluating SEPP versus other phylogenetic placement methods.
+\item Chapter 6 will discuss TIPP, the modification of SEPP for taxonomic identification.  I will present design studies evaluating TIPP versus existing methods on both simulated and real metagenomic datasets.
+\item Chapter 7 will discuss UPP, the modification of SEPP for ultra-large alignment estimation.  I will present design studies evaluating UPP versus existing methods on both very large biological datasets.
+\item Chapter 8 will be a summary of my contributions and describe future research work.
+\end{itemize}
+
+\bibliographystyle{plain}
+\bibliography{new}
+\end{document}
+
+Title:Fast and Accurate Alignment and Phylogeny Estimation Methods for Large Datasets. Description: Advances in sequencing technology has resulted in an explosion of biological information. While thousands of species have been sequenced, many more have not. As more and more species are sequenced, the challenge of determining the phylogeny, evolutionary history between different species, becomes more difficult. The most ambitious of the phylogenetic projects is the Tree of Life, with an eventual goal of estimating a phylogeny on all living organisms. New efficient computational methods will be necessary to aid in this goal. The explosion of sequencing data is not the only issue that hinders phylogenetic analyses. Next generation sequencing (NGS) technology can result in mixed datasets, datasets containing both short reads and full length sequences. Mixed datasets can occur whenever short reads produced by NGS cannot be assembled into full length sequences. This is a common occurrence in metagenomic analyses. In metagenomic analyses, the genetic material from an environmental sample is directly sequenced. The output of a metagenomic study is short reads coming from various species residing in the sample. Without the ability to identify the species of the short read, it is difficult to assemble the short reads into full length sequences. Traditional alignment and phylogeny estimation methods are ill-equipped to analyze mixed datasets, thus different techniques are needed. One approach to analyze mixed datasets is through phylogenetic placement. The input to phylogenetic placement methods is a backbone alignment and tree and a set of query sequences. The output is the 'best' placement of each query sequence into the backbone tree. The placement can be used to identify the species of the query sequence, but also yields more information, such as the evolutionary relationship between the query sequence and all other sequences in the backbone tree. For my dissertation, I will present research making advances on large-scale alignment estimation, large-scale phylogeny estimation, and taxon identification, with particular attention to analyses of fragmentary sequences. My contributions will be in the following areas: 'Alignment masking' Masking is the removal of entire sites believed to be in error from an alignment. The hope is that estimating trees from masked alignments will result in better trees than estimating trees from unmasked alignments. I present research that shows masking methods can be detrimental to phylogeny estimation, and masking methods only improve tree estimation on poor alignments, and rarely (if ever) is helpful when the alignment is relatively accurate. This work is in preparation to be published. 'Supertree estimation' The supertree estimation problem is estimating a single tree on all the taxa from a collection of source trees (each tree does not necessarily need to contain all the taxa). I present a new supertree method that is faster and more accurate than existing methods. This work was published Journal Algorithms for Molecular Biology. 'Phylogenetic Placement' The phylogenetic placement problem is finding the 'best' placement of a query sequence (typically a short read) into a phylogenetic tree. I present a new placement method that more computationally efficient and accurate than leading methods on difficult datasets. This is work published in Pacific Symposium on Biocomputing in 2012. 'Taxonomic Identification' The taxon identification problem is finding the taxonomic classification of a query sequence (typically a short read). This is a fundamental step in metagenomic analyses. I present a new method that classifies more fragments correctly than leading methods. This is work in progress. 'Ultralarge alignment estimation' 
