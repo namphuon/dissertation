@@ -3,14 +3,13 @@
 In Section~\ref{back:phylogenetics}, I give a brief introduction to phylogenies and alignments and define basic definitions and concepts that will be used throughout my dissertation.  In Section~\ref{back:hmm}, I describe Hidden Markov Models (HMMs) and their use in alignment estimation. Finally, in Section~\ref{back:app}, I describe applications of HMMs in the realm of phylogenetic placement, metagenomic analyses, and ultra-large alignment estimation.
 
 \section{Phlogenies and phylogenetics}\label{back:phylogenetics}
-A \emph{phylogeny} is a graphical model that represents the evolutionary relationships between the different species.  One of the most common representations is using a \emph{rooted tree} - a directed acyclic graph.  Each leaf in the tree represents a species, and each internal node in the tree represents a \emph{speciation event}.  Speciation events are the process in which one species give rise to new lineages of species.  The root of the tree represents the most recent common ancestor of all the species.  Throughout my dissertation, I will refer to the leaves of the tree as species, taxa, or sequence, interchangeably.  Similarly, I refer to phylogenies as trees, though a phylogeny does not necessarily have to be tree-like and more complicated representations exist.
+A \emph{phylogeny} is a graphical model that represents the evolutionary relationships between the different species.  One of the most common representations is using a \emph{rooted tree} - a directed acyclic graph.  Each leaf in the tree represents a species, and each internal node in the tree represents a \emph{speciation event}.  Speciation events are the process in which one species give rise to new lineages of species.  The root of the tree represents the most recent common ancestor of all the species.  Throughout my dissertation, I will refer to the leaves of the tree as species, taxa, or sequence, interchangeably.  Similarly, I refer to phylogenies as trees, though a phylogeny does not necessarily have to be tree-like, and more complicated representations do exist.
 
-Figure~\ref{back:phylo_tree}(a) shows an example of a rooted phylogenetic tree.  The relationship between the different species can be inferred from the tree.  For example, species $A$ and $B$ are more closely related than $A$ and $C$ because $A$ and $B$ share a more recent common ancestor (red node) than $A$ and $C$ (blue node). The example shown is a rooted tree, i.e., the tree is rooted on the node that represents the most recent common ancestor (MRCA) of all the species (black node).  In general, estimating the root of the tree is very difficult as most common methods for estimating phylogenies assume time-reversibility, and under these models, it is not possible to determine which node is the parent and which node is the child.  Thus, when I discuss phylogenies, I refer to unrooted trees (see Fig.~\ref{back:phylo_tree}(b)).
+Figure~\ref{back:phylo_tree}(a) shows an example of a rooted phylogenetic tree.  The relationship between the different species can be inferred from the tree.  For example, species $A$ and $B$ are more closely related than $A$ and $C$ because $A$ and $B$ share a more recent common ancestor (red node) than $A$ and $C$ (blue node). The example shown is a rooted tree, i.e., the direction of evolution is known, and the root of the tree represents the most recent common ancestor (MRCA) of all the species (black node).  In general, estimating the root of the tree is very difficult as most common methods for estimating phylogenies assume time-reversibility, and under these models, it is not possible to determine which node is the ancestor and which node is the descendent.  Thus, when I discuss phylogenies, I refer to unrooted trees (see Fig.~\ref{back:phylo_tree}(b)).
 
 \textbf{Nam:  Maybe add a little more about rooting, how it is done with outgroup, or it can be done under strong molecular clock assumption}
 
-
-Each edge in the tree defines a bipartition.  For example, in Figure \ref{back:phylo_tree}(b), the red edge represents the bipartition $\{CD|ABEFGH\}$ (note that $\{CD|ABEFGH\}$ is identical to $\{ABEFGH|CD\}$).  Removal of this edge separates $CD$ from $ABEFGH$.  A tree can be uniquely identified by its set of bipartitions.  Thus, Figure \ref{back:phylo_tree}(b) can be identified by the bipartition set $\{\{AB|CDEFGH\}, \{CD|ABEFGH\}, \{EF|ABCDGH\},\{GH|ABCDEF\},$ $\{ABCD|EFGH\}\}$ (trival bipartitions that split a leaf node from the remaining leaves of the tree does not need to be listed as these bipartitions will be found in all trees that have the same leaf set).
+Each edge in the tree defines a bipartition.  For example, in Figure \ref{back:phylo_tree}(b), the red edge represents the bipartition $\{CD|ABEFGH\}$ (note that $\{CD|ABEFGH\}$ is identical to $\{ABEFGH|CD\}$).  Removal of this edge separates $CD$ from $ABEFGH$.  A tree can be uniquely identified by its set of bipartitions.  Thus, Figure \ref{back:phylo_tree}(b) can be uniquely identified by the bipartition set $\{\{AB|CDEFGH\}, \{CD|ABEFGH\}, \{EF|ABCDGH\},\{GH|ABCDEF\},$ $\{ABCD|EFGH\}\}$ (trival bipartitions that split a leaf node from the remaining leaves of the tree does not need to be listed as these bipartitions will be found in all trees that share the same leaf set).
 
 \textbf{Nam:  Discuss that these trees presented are binary trees, and that they can also contain polytomies.}
 
@@ -52,11 +51,11 @@ In my dissertation, I report both metrics, as well as the average of the two rat
 \textbf{Build figure showing how SPFN and SPFP is computed}
 
 \subsection{Phylogeny estimation}\label{back:alignment}
-\textbf{Nam:  fix this section, cover phylogeny estimation, , definition of alignment, cite survey papers for sequence alignment}
+\textbf{Nam:  fix this section, cover phylogeny estimation, definition of alignment, cite survey papers for sequence alignment}
 
 \paragraph{Comparing trees.}  One metric that can be used to compare tree topologies is by looking at the total number of bipartitions that are unique to each tree.  This metric is known as the Robinson–Foulds (RF) distance~\cite{RF}.  More formally, let $S_1$ be the set of bipartitions in $T_1$ and $S_2$ be the set of bipartitions in $T_2$, then the RF distance is defined as: $RF=|S_1\cup S_2|-|S_1\cap S_2|$. Typically, this metric is normalized by the total number of bipartitions in $T_1$ and $T_2$.  
 
-If the true tree is known, then the error of an estimated tree can be measured by percentage of bipartitions in the true tree that is not recovered in the estimated tree (the false negative rate), and by percentage of bipartitions in the estimated tree that is not in found in the true tree (the false positive rate).  More formally, if $T_1$ is the true tree and $T_2$ is the estimated tree, then the false negative (FN) rate is defined as: $FN=1-\frac{-|S_1\cap S_2|}{|S_1|}$.  Similarly, the false positive (FP) rate is defined as: $FP=1-\frac{|S_1\cap S_2|}{|S_2|}$.  The FN rate is also known as the missing branch rate as it is the percentage of branches that are missing from the estimated tree.  My dissertation primarily focuses on the missing branch rate when comparing the error of an estimated tree.
+If the true tree is known, then the error of an estimated tree can be measured by percentage of bipartitions in the true tree that is not recovered in the estimated tree (the false negative rate), and by percentage of bipartitions in the estimated tree that is not in found in the true tree (the false positive rate).  More formally, if $T_1$ is the true tree and $T_2$ is the estimated tree, then the false negative (FN) rate is defined as: $FN=1-\frac{-|S_1\cap S_2|}{|S_1|}$.  Similarly, the false positive (FP) rate is defined as: $FP=1-\frac{|S_1\cap S_2|}{|S_2|}$.  The FN rate is also known as the missing branch rate as it is the percentage of branches that are missing from the estimated tree, and I will interchangeably use these two terminologies.  My dissertation primarily focuses on the missing branch rate when comparing the error of an estimated tree.
 
 Figure~\ref{back:tree_error} shows an example of a true tree and an estimated tree.  Each tree contains 5 bipartitions.  The bipartitions $\{AB|CDEFGH\}$ and $\{CD|ABEFGH\}$ are found in the true tree, but not present in the estimated tree.  Thus, missing branch rate 20\%.  Similarly, the bipartitions $\{AC|BDEFGH\}$ and $\{BD|ACEFGH\}$ are found in the estimated tree, but not present in the true tree, yielding an FP rate of 20\%.
 
@@ -155,8 +154,6 @@ Therefore, PaPaRa+EPA and HMMALIGN+EPA are very close
 in terms of placement accuracy, although substantially different
 in terms of running time.  
 
-I will show in Chapter~\ref{sepp_chapter} that both HMMALIGN+pplacer and PaPaRa+pplacer suffer
-
 \paragraph{Comparing placement accuracy.}  
 The metric used in my dissertation for measuring the accuracy of placement is the change in missing branch rate of the backbone tree before and after insertion of the query sequence (called \deltafn ).  More formally, if $FN$ is the number of missing branches in the backbone tree $T$, and $FN'$ is the number of missing branches in $T'$, then \deltafn$=FN'-FN$.  Figure~\ref{back:placement_error} shows an example of this computation.  Let the initial backbone tree have 0 FN.  After the insertion of the query sequence $s$ into $T$, $T'$ is missing bipartitions $\{As|BCDEFGH\}$ and $\{ABs|CDEFGH\}$ (bipartitions colored red in Fig.~\ref{back:placement_error}).  The resulting \deltafn~is 2.
 
@@ -222,10 +219,192 @@ The metric used in my dissertation for measuring the accuracy of placement is th
 % curated tree, since estimated trees will generally have error.
 
 \subsection{Metagenomic analyses}\label{back:metagenomic}
-\textbf{NAM:Add more formal definition, citations}.
-\paragraph{Taxonomic identification}\label{back:taxonomic_id}
+Traditionally, bacterial species of interest from an environmental sample were identified by first culturing a clonal colony of the species in a laboratory environment, and then sequencing the genetic material directly from the colony using Next Generation Sequencing (NGS) technology.  The output of NGS technology is millions of short DNA fragments called reads.  As all the reads come from the same species, the fragments can be assembled together into longer sequences called contigs, and from the contigs, the genome of the original species could be estimated and the species could be taxonomically classified.
 
+However, an estimated 99\% of all microbial life cannot be cultured in lab~\cite{todo}, and thus the genomes of these organisms cannot be sequenced using traditional methods.  Metagenomic analyses provide a window into the organisms present in an evironmental sample by sequencing the genetic material directly from the sample.  This process poses a new problem, though, as now the reads come from all the species present in the sample, making assembly extremely difficult~\cite{todo}.  One of the fundamental challenges in a metagenomic study is the taxonomic classification of the metagenomic reads.  
+
+Providing taxonomic labels to metagenomic sequences requires
+extrapolating the knowledge contained in sequence databases to
+previously unseen DNA strings.  Simple similarity-based approaches
+(e.g., picking the best database hit as the best `guess' at the
+taxonomic label) have been shown to be insufficiently
+accurate \cite{closest-blast-hit}, leading to the development of 
+new and more sophisticated methods.
+
+Recently developed methods improving
+on the simple similarity-based approaches include 
+(a) composition-based approaches that rely on
+various machine learning techniques 
+(Support Vector Machines in
+PhyloPythia and PhyloPythiaS \cite{McHardy2007a, Patil2011}, 
+Interpolated Markov Models in Phymm 
+\cite{Brady2011},
+Bayesian models in NBC \cite{Rosen2011}, or neural networks~\cite{SOM2006}) to
+classify sequences based on their DNA composition (usually based on
+the frequency of short k-mers),
+(b)  more sophisticated analyses of
+similarity search results (e.g., using least-common-ancestor
+aggregation in Megan \cite{Huson2007}, or classifiers built from similarity
+search results as done in MetaPhyler \cite{Liu2011d,Liu2011}, 
+MetaPhlAn \cite{Segata2012a}, and mOTU \cite{Sunagawa2013}
+or protein profiles in Carma \cite{Gerlach2011b}), and
+(c) combinations of
+multiple approaches (e.g., composition and similarity based approaches
+in PhymmBL \cite{Brady2009}).  
+Some of these approaches (e.g., most of the
+composition-based approaches) can be applied to any DNA sequence,
+while others are specific to a reference collection of carefully
+selected genes (e.g., MetaPhyler, MetaPhlAn, and mOTU use a collection of
+universal or clade-specific marker genes).  These
+``marker-gene" methods can
+achieve much higher recall than other
+approaches~\cite{Liu2011d} for sequences from the marker genes, but 
+can only classify a small
+fraction of all sequences (namely, those that match the 
+selected marker genes). 
+
+Abundance profiling, also called ``phylogenetic profiling", 
+seeks to estimate the relative
+abundance of the species (or
+genera, or families, etc.) within a sequence dataset.
+While many methods produce these estimates by characterizing
+most (or all) of the sequences in the dataset, marker-based methods
+produce these estimates by characterizing only those
+sequences that match the marker genes they rely on.
+Since the marker genes are supposed to be single
+copy and universal, these estimations do not need to
+be corrected for the copy number in each genome, or for
+missing data. 
+However, the restriction to sequences that match the marker genes
+has the potential to reduce accuracy since it means only a subset
+of the sequences are characterized.
+
+\paragraph{Taxonomic identification}\label{back:taxonomic_id}
 \textbf{NAM:Add more formal definition, citations}.
 \paragraph{Taxonomic profiling}\label{back:taxonomic_profiling}
 \textbf{NAM:Add more formal definition, citations}
-\subsection{Ultra-large alignment estimation}\label{back:ultra_large}
+
+
+% Metagenomic studies of microbial communities commonly generate
+% millions to hundreds of millions of sequencing reads.  The assignment
+% of accurate taxonomic labels to these sequences is a critical
+% component in many analyses, but is
+% complicated by the fact that the majority of the organisms
+% found in environmental or host-associated communities cannot be easily
+% cultured in a laboratory, and an even smaller number have been
+% sequenced, even partially.  Thus, these commonly encountered organisms
+% are largely absent from existing databases of known genomes and genes.
+% Providing taxonomic labels to metagenomic sequences requires
+% extrapolating the knowledge contained in sequence databases to
+% previously unseen DNA strings.  Simple similarity-based approaches
+% (e.g., picking the best database hit as the best `guess' at the
+% taxonomic label) have been shown to be insufficiently
+% accurate \cite{closest-blast-hit}, leading to the development of 
+% new and more sophisticated methods.
+% 
+% Recently developed methods improving
+% on the simple similarity-based approaches include 
+% (a) composition-based approaches that rely on
+% various machine learning techniques 
+% (Support Vector Machines in
+% PhyloPythia and PhyloPythiaS \cite{McHardy2007a, Patil2011}, 
+% Interpolated Markov Models in Phymm 
+% \cite{Brady2011},
+% Bayesian models in NBC \cite{Rosen2011}, or neural networks~\cite{SOM2006}) to
+% classify sequences based on their DNA composition (usually based on
+% the frequency of short k-mers),
+% (b)  more sophisticated analyses of
+% similarity search results (e.g., using least-common-ancestor
+% aggregation in Megan \cite{Huson2007}, or classifiers built from similarity
+% search results as done in MetaPhyler \cite{Liu2011d,Liu2011}, 
+% MetaPhlAn \cite{Segata2012a}, and mOTU \cite{Sunagawa2013}
+% or protein profiles in Carma \cite{Gerlach2011b}), and
+% (c) combinations of
+% multiple approaches (e.g., composition and similarity based approaches
+% in PhymmBL \cite{Brady2009}).  
+% Some of these approaches (e.g., most of the
+% composition-based approaches) can be applied to any DNA sequence,
+% while others are specific to a reference collection of carefully
+% selected genes (e.g., MetaPhyler, MetaPhlAn, and mOTU use a collection of
+% universal or clade-specific marker genes).  These
+% ``marker-gene" methods can
+% achieve much higher recall than other
+% approaches~\cite{Liu2011d} for sequences from the marker genes, but 
+% can only classify a small
+% fraction of all sequences (namely, those that match the 
+% selected marker genes). 
+% 
+% Abundance profiling, also called ``phylogenetic profiling", 
+% seeks to estimate the relative
+% abundance of the species (or
+% genera, or families, etc.) within a sequence dataset.
+% While many methods produce these estimates by characterizing
+% most (or all) of the sequences in the dataset, marker-based methods
+% produce these estimates by characterizing only those
+% sequences that match the marker genes they rely on.
+% Since the marker genes are supposed to be single
+% copy and universal, these estimations do not need to
+% be corrected for the copy number in each genome, or for
+% missing data. 
+% However, the restriction to sequences that match the marker genes
+% has the potential to reduce accuracy since it means only a subset
+% of the sequences are characterized.
+
+% \paragraph{Taxonomic identification through phylogenetic placement.}
+% One approach toward taxonomic identification is through phylogenetic placement.  The evolutionary relationship between the the query sequence and the backbone sequences can be inferred from the placement location.  For example, in Figure~\ref{tipp:placement}, $Q1$ is placed closest to Species $A1$, and thus, it can be inferred that $Q1$ is more closely related to Species $A1$.  Similarly, $Q2$ is more closely related to Species $A1$ and $A2$ than to Species $B1$ and $B2$.  Thus, one simple technique for identifying a query sequence is to classify it by the LCA of its sibling leaf nodes.  Thus, $Q1$ would be classified as Species $A1$ (its only sibling leaf node is Species $A1$) and $Q2$ would be classified as Genus $A$ (its sibling leaf nodes are Species $A1$ and Species $A2$).  
+% 
+% \begin{figure}[htpb]
+% \begin{center}
+% {\includegraphics[scale=0.8]{tipp/placement.pdf}}
+% \end{center}
+% \caption[Taxonomic classification using phylogenetic placement]{\label{tipp:placement} Taxonomic classification using phylogenetic placement.  The leaf nodes of the rooted backbone tree are labeled with the species name.  Each query sequences is placed onto an edge in the backbone tree and is classified by the LCA its sibling leaf nodes.}
+% \end{figure}
+% 
+% Using this approach, I compared SEPP and HMMALIGN+pplacer for taxonomic identification under a \emph{leave-species-out} experiment.  Under a leave-species-out experiment, the species of the query sequence is removed from the backbone alignment and tree, simulating the classification of a novel species.  Thus, while the species of the query sequence cannot be correctly identified, the remaining taxonomic lineage (genus, family, etc...) can still be correctly classified.  The fragments were simulated under differring models and rates of sequencing error.  
+% 
+% Figure~\ref{tipp:preliminary_sepp} shows that SEPP is more sensitive than HMMALIGN+pplacer under the hardest model condition (``454\_3''), classifying more fragments correctly, especially at the phylum level.  Both methods tend to classify the large majority of the fragments, leaving very few fragments unclassified.  This results in a very high false positive rate, especially under more difficult conditions.  
+% 
+% To understand why this is the case, it's important to note that pplacer outputs multiple possible locations for the placement of each query sequence.  Each placement has an associated with a likelihood weight ratio.  However, when HMMALIGN+pplacer or SEPP is used for taxonomic classification, only the placement with the likelihood weight ratio is used, ignoring that there may be other placements with almost as high weight.  This was one of the key insights in the development of TIPP.  By taking into account different sources of uncertainty, both in alignment and placement, the false positive rate could be reduced.
+
+% \begin{figure}[htpb]
+% \begin{center}
+% {\includegraphics[scale=0.4]{{tipp/sepp.species}.pdf}}
+% \end{center}
+% \caption[Comparing SEPP and HMMALIGN+pplacer for taxonomic identification]{\label{tipp:preliminary_sepp} Leave-species-out experiments comparing SEPP and HMMALIGN+pplacer taxonomic classification accuracy on the rpsB gene under sequences simulated under different error model conditions.  Fragments were simulated with either Illumina-like or 454-like errors, and with varying rates of error.  Models denoted with a ``1'' have the lowest rates of error, and models with a ``3'' or ``4'' have the highest rates of error.  SEPP is run using a alignment decomposition size of 100 and placing on the entire backbone tree.}
+% \end{figure}
+
+%Taxon identification methods only classify a
+%subset of the fragments (some correctly and some incorrectly), and
+%will leave some fragments unclassified at each taxonomic level.
+%Therefore, evaluations of taxonomic classification methods
+%consider the percent of fragments classified
+%at each rank correctly, incorrectly, or unclassified.  
+
+%However, accurate classifications of just the fragments matching
+%marker genes is sufficient for many purposes.
+%For example, most culture-independent
+%studies of microbial communities have relied on the
+%analysis of the 16S rRNA gene.
+%These studies, generating broad taxonomic profiles of the
+%communities being studied, have been the basis for
+%many important discoveries in microbial ecology and
+%biomedicine  \cite{Turnbaugh2009}. % Alternative: Aagaard2012, Belda-Ferre2012
+%In addition, 
+%taxon identification methods should accurately label
+%sequences already found in public databases, but should also provide accurate
+%guesses on the taxonomy of sequences that are only distantly related
+%to known sequences.  In fact, identifying novel organisms or taxonomic
+%clades is an important focus of recent studies~\cite{eisen} and taxon
+%identification software should be able to accurately identify putative
+%novel organisms.  
+
+
+% We have developed TIPP, a new method for taxon
+% identification and phylogenetic profiling.
+% TIPP is a marker-based method, but can be used to
+% characterize any sequence matching any gene for which
+% a dense enough sample of full-length sequences are
+% available. In this paper, we explore TIPP using the
+% Metaphyler's collection of 30 marker genes.
+
+%\subsection{Ultra-large alignment estimation}\label{back:ultra_large}
