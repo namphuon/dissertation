@@ -379,66 +379,66 @@ For the simulated datasets I report averages for these
 measurements over the 20 replicates in each model
 condition.  
 
-\subsection{Placement accuracy}
-For the most likely
-placement\footnote{Multiple possible placements for
-each read, along with the likelihood of each placement,
-are also provided by pplacer.} of each fragmentary
-read, I first calculate the number of missing branches compared to the 
-reference tree. 
-This number in isolation is hard to interpret, for at least two reasons.
-In the case where \sate~alignment/tree is the input, the backbone tree itself
-contains error. The error of the initial backbone tree is a lower bound on the
-tree error after placement of reads (in fact it is a rather liberal lower bound,
-as the optimal placement of fragments can still have errors higher than the
-initial tree).
-In the case where true or curated alignment/tree is 
-the input, the initial tree has no
-error, but I can still establish useful lower bounds of the tree error. 
-This can be done by using the reference alignment of query sequences 
-to be the backbone alignment as input to the \pplacer. 
-The resulting placement of query sequences
-is the best one can realistically hope for.
-%Siavash - note that randomness is also an explanation for
-%having delta error below 0.  This makes me wonder if we might not just
-%show the delta as the additional error over the error before insertion.
-%ALSO: need to comment on difference between error to true tree and
-%error to ML on true or curated alignment.
-%and perhaps we should show the actual error instead of delta error.
+% \subsection{Placement accuracy}
+% For the most likely
+% placement\footnote{Multiple possible placements for
+% each read, along with the likelihood of each placement,
+% are also provided by pplacer.} of each fragmentary
+% read, I first calculate the number of missing branches compared to the 
+% reference tree. 
+% This number in isolation is hard to interpret, for at least two reasons.
+% In the case where \sate~alignment/tree is the input, the backbone tree itself
+% contains error. The error of the initial backbone tree is a lower bound on the
+% tree error after placement of reads (in fact it is a rather liberal lower bound,
+% as the optimal placement of fragments can still have errors higher than the
+% initial tree).
+% In the case where true or curated alignment/tree is 
+% the input, the initial tree has no
+% error, but I can still establish useful lower bounds of the tree error. 
+% This can be done by using the reference alignment of query sequences 
+% to be the backbone alignment as input to the \pplacer. 
+% The resulting placement of query sequences
+% is the best one can realistically hope for.
+% %Siavash - note that randomness is also an explanation for
+% %having delta error below 0.  This makes me wonder if we might not just
+% %show the delta as the additional error over the error before insertion.
+% %ALSO: need to comment on difference between error to true tree and
+% %error to ML on true or curated alignment.
+% %and perhaps we should show the actual error instead of delta error.
 
-To account for the lower bounds described above,
-I also define and report 
-the ``delta error" for each technique,  as follows.
-For each read $s$ placed on the \sate~backbone tree, 
-I report the difference between
-the number of missing branches of the initial 
-backbone tree 
-and the number of missing branches after placement of $s$.
-When the backbone tree is 
-the reference (true or curated) tree, 
-I report the
-difference between the number of missing branches of the tree produced by
-placement of $s$ according to the 
-reference alignment of $s$ to $S$ and 
-the number of missing branches
-of the tree after placement of $s$.
-In all cases, 
-the number of missing branches in each tree is defined with
-respect to the reference tree for the taxa in the given tree.
-Thus, the number of missing branches in the backbone trees is
-defined by the reference tree on the set $S$ of backbone taxa, and the
-number of missing branches in the tree produced by placing the
-query sequence into the backbone tree is defined by the
-reference tree on the set $S \cup \{s\}$.
+% To account for the lower bounds described above,
+% I also define and report 
+% the ``delta error" for each technique,  as follows.
+% For each read $s$ placed on the \sate~backbone tree, 
+% I report the difference between
+% the number of missing branches of the initial 
+% backbone tree 
+% and the number of missing branches after placement of $s$.
+% When the backbone tree is 
+% the reference (true or curated) tree, 
+% I report the
+% difference between the number of missing branches of the tree produced by
+% placement of $s$ according to the 
+% reference alignment of $s$ to $S$ and 
+% the number of missing branches
+% of the tree after placement of $s$.
+% In all cases, 
+% the number of missing branches in each tree is defined with
+% respect to the reference tree for the taxa in the given tree.
+% Thus, the number of missing branches in the backbone trees is
+% defined by the reference tree on the set $S$ of backbone taxa, and the
+% number of missing branches in the tree produced by placing the
+% query sequence into the backbone tree is defined by the
+% reference tree on the set $S \cup \{s\}$.
 
 
-Note that in the case where the backbone tree is the reference tree, 
-the number of missing branches is
-equal to the node distance between the correct placement of reads and
-actual placements, the error used in the literature\cite{Berger2011,Matsen2010,Berger2011a}. 
-However, this edge distance is not as meaningful as the 
-number of missing branches with respect to either the true or
-curated tree, since estimated trees will generally have error.
+% Note that in the case where the backbone tree is the reference tree, 
+% the number of missing branches is
+% equal to the node distance between the correct placement of reads and
+% actual placements, the error used in the literature\cite{Berger2011,Matsen2010,Berger2011a}. 
+% However, this edge distance is not as meaningful as the 
+% number of missing branches with respect to either the true or
+% curated tree, since estimated trees will generally have error.
 
 \subsection{ Computational aspects}
 I report the running times and peak memory usage, each measured

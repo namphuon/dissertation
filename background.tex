@@ -1,56 +1,231 @@
 \chapter{Background}
 \index{Background@\emph{Background}}\label{background}%
-In Section~\ref{back:phylogenetics}, I give a brief introduction to phylogenetics and define basic definitions and concepts that will be used throughout my dissertation.  In Section~\ref{back:hmm}, I describe Hidden Markov Models (HMMs) and their use in alignment estimation. Finally, in Section~\ref{back:metagenomic}, I describe metagenomic analyses and the difficulty in analyzing metagenomic datasets.
+In Section~\ref{back:phylogenetics}, I give a brief introduction to phylogenies and alignments and define basic definitions and concepts that will be used throughout my dissertation.  In Section~\ref{back:hmm}, I describe Hidden Markov Models (HMMs) and their use in alignment estimation. Finally, in Section~\ref{back:app}, I describe applications of HMMs in the realm of phylogenetic placement, metagenomic analyses, and ultra-large alignment estimation.
 
-\section{Phylogenetics}\label{back:phylogenetics}
-\emph{Phylogenetics} is the study of the evolutionary relationship between different organisms.  Often times the product of a phylogenetic study is a \emph{phylogeny}, a hypothesis of the evolutionary history between different species.  One common representation of a phylogeny is through a phylogenetic tree.  Figure~\ref{back:phylo_tree} shows an example of a rooted phylogenetic tree.  
-The leaves of the tree represent the organisms of interest.  Throughout my dissertation, I will refer to the leaves of the tree as species, taxa, or sequence, interchangeably.  The relationship between the different species can be inferred from the tree.  For example, species $A$ and $B$ are more closely related than $A$ and $C$ because $A$ and $B$ share a more recent common ancestor (red node) than $A$ and $C$ (blue node).  Each internal node represents a \emph{speciation event}, in which a lineage splits into two new lineages.  The root of the phylogeny represents the most recent common ancestor of all the species.  
+\section{Phlogenies and phylogenetics}\label{back:phylogenetics}
+A \emph{phylogeny} is a graphical model that represents the evolutionary relationships between the different species.  One of the most common representations is using a \emph{rooted tree} - a directed acyclic graph.  Each leaf in the tree represents a species, and each internal node in the tree represents a \emph{speciation event}.  Speciation events are the process in which one species give rise to new lineages of species.  The root of the tree represents the most recent common ancestor of all the species.  Throughout my dissertation, I will refer to the leaves of the tree as species, taxa, or sequence, interchangeably.  Similarly, I refer to phylogenies as trees, though a phylogeny does not necessarily have to be tree-like and more complicated representations exist.
 
-The theory of universal common ancestry states that all living organisms have shared evolutionary history, or in other words, all extant species descended from a common ancestor.  Thus, as DNA is passed on from parent to child, DNA and biomolecular sequences that are derived from DNA (RNA and amino acids), are often collected and used to infer phylogenies.  
+Figure~\ref{back:phylo_tree}(a) shows an example of a rooted phylogenetic tree.  The relationship between the different species can be inferred from the tree.  For example, species $A$ and $B$ are more closely related than $A$ and $C$ because $A$ and $B$ share a more recent common ancestor (red node) than $A$ and $C$ (blue node). The example shown is a rooted tree, i.e., the tree is rooted on the node that represents the most recent common ancestor (MRCA) of all the species (black node).  In general, estimating the root of the tree is very difficult as most common methods for estimating phylogenies assume time-reversibility, and under these models, it is not possible to determine which node is the parent and which node is the child.  Thus, when I discuss phylogenies, I refer to unrooted trees (see Fig.~\ref{back:phylo_tree}(b)).
 
-\textbf{NAM:Add more formal definition, citations; include uses of phylogenies in virology, medicine production, etc..., show unrooted trees, also, discuss models of sequence evolution, indels mutation?}.
+\textbf{Nam:  Maybe add a little more about rooting, how it is done with outgroup, or it can be done under strong molecular clock assumption}
+
+
+Each edge in the tree defines a bipartition.  For example, in Figure \ref{back:phylo_tree}(b), the red edge represents the bipartition $\{CD|ABEFGH\}$ (note that $\{CD|ABEFGH\}$ is identical to $\{ABEFGH|CD\}$).  Removal of this edge separates $CD$ from $ABEFGH$.  A tree can be uniquely identified by its set of bipartitions.  Thus, Figure \ref{back:phylo_tree}(b) can be identified by the bipartition set $\{\{AB|CDEFGH\}, \{CD|ABEFGH\}, \{EF|ABCDGH\},\{GH|ABCDEF\},$ $\{ABCD|EFGH\}\}$ (trival bipartitions that split a leaf node from the remaining leaves of the tree does not need to be listed as these bipartitions will be found in all trees that have the same leaf set).
+
+\textbf{Nam:  Discuss that these trees presented are binary trees, and that they can also contain polytomies.}
+
 
 \begin{figure}[htpb]
-\begin{center}
-{\includegraphics[scale=0.8]{background/phylogeny.pdf}}
-\end{center}
-\caption[A rooted phylogenetic tree.]{\label{back:phylo_tree} Example of a rooted phylogenetic tree.}
+\begin{subfigure}[htpb]{\textwidth}
+  \centering
+  \includegraphics[width=0.60\linewidth]{{background/phylogeny}.pdf}\\
+  \caption[]{A rooted phylogenetic tree.}
+\end{subfigure}
+\begin{subfigure}[htpb]{\textwidth}
+  \centering
+  \includegraphics[width=0.60\linewidth]{{background/unrooted_phylogeny}.pdf}\\
+  \caption[]{An unrooted phylogenetic tree.}
+\end{subfigure}
+\caption[Example of rooted and unrooted trees.]{\label{back:phylo_tree} Example of a) a rooted phylogenetic tree, and b) the unrooted version of the same tree.  In the rooted tree, the red node is the MRCA of species $A$ and $B$, and the blue node is the MRCA of $A$ and $C$.  The black node is the MRCA of all species in the tree.  In the unrooted tree, the red edge represents the bipartition $\{CD|ABEFGH\}$.}
 \end{figure}
 
 
+% \emph{Phylogenetics} is the study of the evolutionary relationship between different organisms, and phylogenies are a product of a phylogenetic study.  A typical molecular phylogenetic study begins by collecting biomolecular sequences (DNA, RNA, or amino acid sequences) from the species of interest.  The sequences come from a homologous
 
-\subsection{Alignment estimation}\label{back:alignment}
 
-Start with a simplified view of sequence evolution.  There is a DNA sequence at the root.  It evolves down tree through series of substitutions and indels (Fig.~\ref{back:mutations}).  At the end of the process is are sequences that are homologous; they all descended from a common sequence.  A phylogenetic analyses will typically begin by collecting a set of homologous sequences from a common source, such as gene protein sequence.  This is the end result of the sequence evolution process; the history of the changes is lost.  Due to insertion and deletion events, the sequences are all of different length.  Typically a first step in estimating a phylogeny is to first estimate a \emph{Multiple Sequence Alignment} (MSA).  An MSA is a matrix where each row contains a sequence and each column represents shared homology for all biomolecular characters in that column.  
+% One common representation of a phylogeny is through a phylogenetic tree.  Figure~\ref{back:phylo_tree} shows an example of a rooted phylogenetic tree.  
+% The leaves of the tree represent the organisms of interest.  Throughout my dissertation, I will refer to the leaves of the tree as species, taxa, or sequence, interchangeably.  The relationship between the different species can be inferred from the tree.  For example, species $A$ and $B$ are more closely related than $A$ and $C$ because $A$ and $B$ share a more recent common ancestor (red node) than $A$ and $C$ (blue node).  Each internal node represents a \emph{speciation event}, in which a lineage splits into two new lineages.  The root of the phylogeny represents the most recent common ancestor of all the species.  
 
-There are many different methods for estimating MSA, including Bayesian techniques (BAli-Phy) that co-estimate alignments and trees, progressive alignment techniques that use a guide tree to pairwise align the sequences (ClustalW, T-COFFEE), iterative methods that use a guide tree, but iterate to obtain better guide trees (Muscle, Mafft, SATe).  
+% The theory of universal common ancestry states that all living organisms have shared evolutionary history, or in other words, all extant species descended from a common ancestor.  Thus, as DNA is passed on from parent to child, DNA and biomolecular sequences that are derived from DNA (RNA and amino acids), are often collected and used to infer phylogenies.  
 
-\textbf{NAM:Add more formal definition, citations}.
+% \textbf{NAM:Add more formal definition, citations; include uses of phylogenies in virology, medicine production, etc..., show unrooted trees, also, discuss models of sequence evolution, indels mutation?}.
 
-\subsection{Phylogeny estimation}\label{back:phylogeny}
+\subsection{MSA estimation}\label{back:alignment}
+\textbf{Nam:  fix this section, cover models of sequence evolution, definition of alignment, cite survey papers for sequence alignment, describe an MSA, and that an MSA is an estimation of the evolutionary relationship between the different characters.  Define a homology.  Build figure of a MSA}
 
-Once an alignment has been estimated, a phylogeny can be estimated based on various methods such as Maximum Parisomony (TNT and PAUP*), distance-based methods (NJ, UPGMA, FastME), Maximum Likelihood (RAxML, FastTree), or Bayesian methods (Mr. Bayes).  
+\paragraph{Comparing alignments.}  One pair of metrics that can be used to score the quality of an estimated MSA are the sum-of-pairs false negative (SPFN) and the sum-of-pairs false positive (SPFP) rates.  The SPFN rate is defined as the percentage of homologies in the true alignment that is not found in the estimated alignment, normalized by the total homologies in the true alignment.  Similarly, the SPFP rate is defined as the percentage of homologies in the estimated alignment that is not found in the true alignment, normalized by the total homologies in the estimated alignment.  
 
-\textbf{NAM:Add more formal definition, citations}.
+In my dissertation, I report both metrics, as well as the average of the two rates.  In addition, I also report the total column (TC) error rate on protein datasets.  This the number of columns in the true alignment that are exactly recovered in the estimated alignment, normalized by the total columns in the true alignment.  This metric is of interest when the goal is to examine how well alignment methods recover conserved domains in the alignment.
+
+%As one might expect, estimating every single homology correctly at a site when there are many sequences is difficult for all but the most conserved sites.  
+
+\textbf{Build figure showing how SPFN and SPFP is computed}
+
+\subsection{Phylogeny estimation}\label{back:alignment}
+\textbf{Nam:  fix this section, cover phylogeny estimation, , definition of alignment, cite survey papers for sequence alignment}
+
+\paragraph{Comparing trees.}  One metric that can be used to compare tree topologies is by looking at the total number of bipartitions that are unique to each tree.  This metric is known as the Robinson–Foulds (RF) distance~\cite{RF}.  More formally, let $S_1$ be the set of bipartitions in $T_1$ and $S_2$ be the set of bipartitions in $T_2$, then the RF distance is defined as: $RF=|S_1\cup S_2|-|S_1\cap S_2|$. Typically, this metric is normalized by the total number of bipartitions in $T_1$ and $T_2$.  
+
+If the true tree is known, then the error of an estimated tree can be measured by percentage of bipartitions in the true tree that is not recovered in the estimated tree (the false negative rate), and by percentage of bipartitions in the estimated tree that is not in found in the true tree (the false positive rate).  More formally, if $T_1$ is the true tree and $T_2$ is the estimated tree, then the false negative (FN) rate is defined as: $FN=1-\frac{-|S_1\cap S_2|}{|S_1|}$.  Similarly, the false positive (FP) rate is defined as: $FP=1-\frac{|S_1\cap S_2|}{|S_2|}$.  The FN rate is also known as the missing branch rate as it is the percentage of branches that are missing from the estimated tree.  My dissertation primarily focuses on the missing branch rate when comparing the error of an estimated tree.
+
+Figure~\ref{back:tree_error} shows an example of a true tree and an estimated tree.  Each tree contains 5 bipartitions.  The bipartitions $\{AB|CDEFGH\}$ and $\{CD|ABEFGH\}$ are found in the true tree, but not present in the estimated tree.  Thus, missing branch rate 20\%.  Similarly, the bipartitions $\{AC|BDEFGH\}$ and $\{BD|ACEFGH\}$ are found in the estimated tree, but not present in the true tree, yielding an FP rate of 20\%.
+
+\textbf{Nam:  Add a little about non-binary trees, and that this dissertation focuses on FN rates because for simulation results FN=FP.  However, for biological datasets, we have bootstrap reference trees that are non-binary and so we focus on how well we can recover highly supported edges.  }
+
+
+\begin{figure}[htbp]
+\centering
+{\includegraphics[width=0.60\textwidth]{background/unrooted_phylogeny_a}}
+\caption[Computing error metrics of estimated tree.]{An example of the true tree and the estimated tree.  The estimated tree has an FN of $\frac{2}{5}$ (two bipartitions colored red in the true tree are not found in the estimated tree; five bipartitions in true tree) and has an FP of $\frac{2}{5}$ (two bipartitions colored blue in the estimated tree are not found in the true tree; five bipartitions in estimated tree).}  
+\label{back:tree_error}
+\end{figure}
+
+%When working with empirical datasets, however, the true evolutionary history of the sequences is unknown.   Thus, we can only give a best estimate of the true tree by using the most accurate phylogeny estimation technique on reference trees are estimated on curated alignments.  
+
+% Start with a simplified view of sequence evolution.  There is a DNA sequence at the root.  It evolves down tree through series of substitutions and indels (Fig.~\ref{back:mutations}).  At the end of the process is are sequences that are homologous; they all descended from a common sequence.  A phylogenetic analyses will typically begin by collecting a set of homologous sequences from a common source, such as gene protein sequence.  This is the end result of the sequence evolution process; the history of the changes is lost.  Due to insertion and deletion events, the sequences are all of different length.  Typically a first step in estimating a phylogeny is to first estimate a \emph{Multiple Sequence Alignment} (MSA).  An MSA is a matrix where each row contains a sequence and each column represents shared homology for all biomolecular characters in that column.  
+
+% There are many different methods for estimating MSA, including Bayesian techniques (BAli-Phy) that co-estimate alignments and trees, progressive alignment techniques that use a guide tree to pairwise align the sequences (ClustalW, T-COFFEE), iterative methods that use a guide tree, but iterate to obtain better guide trees (Muscle, Mafft, SATe).  
 
 \section{Hidden Markov Models}\label{back:hmm}
 
-\textbf{Add text discussing problems of using a single HMM to represent divergent sequences, motivate the HMM families in the next chapter}
+\textbf{Add text discussing how to use profile HMM to align a sequence}
+% \begin{figure}[htbp]
+% \centering
+% {\includegraphics[width=0.80\textwidth]{sepp/hmmer_papara}}
+% \caption[Comparison of HMMALIGN+pplacer and PaPaRa+pplacer.]{Comparison of HMMALIGN+pplacer and PaPaRa+pplacer under 3 different model conditions, ranked in order of increasing rate of evolution.  Thus, M4 is the slowest evolving dataset, and M2 is the fastest evolving dataset.  The number of sequences in the backbone set is 500 for all model conditions.} 
+% \label{background:initial}
+% \end{figure}
+\section{Applications of profile HMMs}\label{back:app}
+\subsection{Phylogenetic placement}
+As I briefly mentioned in Chapter~\ref{intro}, phylogenetic placement is a method for inserting query sequences into an existing phylogenetic tree.  I now formally describe the phylogenetic placement problem as follows:
+
+\textbf{Add text before the formal description on why phylogenetic placement is necessary.  Good for analyzing short fragmentary reads because most traditional alignment methods assume global alignment, need local alignment for shorter fragments.  In addition, under the context of AToL, can build a large tree by aligning to only a backbone alignment instead of all sequences against all other sequences, and then inserting into an existing tree instead of estimating an entire tree on all sequences.  Thus phylogenetic placement may be a method for getting at a tree of all life.}
+%This method is useful in the analyses of short fragmentary reads.  When a dataset consists of sequences of hetrogenous lengths containing both full-length and fragmentary sequences, attempting to globally align the sequences together may result in very gappy alignments of the fragmentary reads.  A better approach is to estimate an alignment and tree on the full-length sequences, and then insert the remaining fragmentary sequences into tree.  The advantage
+
+%Many traditional alignment techniques perform global alignment and assume all the sequences are full-length and of roughly equal size.  When this assumption is violated, such as in the case of aligning fragmentary reads, global alignment methods may end up inserting many gaps to get the fragmentary sequence to align well to the full-length sequences~\cite{todo}.  
+
+\noindent{\em Phylogenetic Placement Problem. }
+\begin{itemize}
+\item Input: the {\em backbone} tree $T$ and {\em backbone} alignment $A$ on set $S$ of full-length sequences,
+and query sequence $s$.
+\item Output: tree $T'$ containing $s$ obtained by adding $s$ as a leaf to
+$T$.
+\end{itemize}
+
+Several methods have been developed for this problem using
+the following two steps:
+\begin{itemize}
+\item Step 1: insert $s$ into alignment $A$ to produce the
+{\em extended alignment} $A'$
+\item Step 2: add $s$ into $T$ using $A'$, optimizing some criterion
+\end{itemize}
+Methods for the first step 
+include HMMALIGN~\cite{Eddy1998}
+and the recently introduced PaPaRa~\cite{Berger2011a} method.  
+Methods for the second step include 
+ EPA~\cite{Berger2011} and pplacer~\cite{Matsen2010}, which
+seek to optimize maximum likelihood
+(pplacer also provides a Bayesian approach).
+Methods for phylogenetic placement can therefore
+be described
+by how they handle each step.
+Three such methods
+include PaPaRa+EPA~\cite{Berger2011a},
+HMMALIGN+EPA~\cite{Berger2011},
+and HMMALIGN+pplacer~\cite{Matsen2010}.
+EPA and pplacer are comparably 
+fast and have almost identical 
+placement accuracy,
+  but have somewhat
+different memory usage and algorithmic features~\cite{Matsen2010};
+hence the differences between HMMALIGN+EPA and HMMALIGN+pplacer
+do not impact the placement accuracy, and have a minor
+impact on running time and memory usage.
+The two techniques for computing the extended alignment,
+PaPaRa and HMMALIGN, are very different.
+HMMALIGN computes a HMM to represent the full-length alignment,
+and then aligns each query sequence to that HMM.  In contrast,
+PaPaRa uses RAxML to estimate ancestral state 
+vectors for each branch in the
+tree, aligns the query sequence to every ancestral state
+vector, selects the alignment that had the best score and uses
+it to extend
+alignment $A$ to include $s$.
+Consequently, PaPaRa is computationally more 
+expensive than HMMALIGN~\cite{Berger2011a}, but EPA placements
+of query sequences based upon PaPaRa extended alignments can be
+more accurate than EPA placements based upon HMMALIGN extended alignments.
+However, the improvement in topological accuracy reported~\cite{Berger2011a}  for
+PaPaRa+EPA over HMMALIGN+EPA was
+relatively small, with PaPaRa+EPA placing
+query sequences on average
+about one edge closer to the correct
+location, out of 799 edges. 
+Therefore, PaPaRa+EPA and HMMALIGN+EPA are very close
+in terms of placement accuracy, although substantially different
+in terms of running time.  
+
+I will show in Chapter~\ref{sepp_chapter} that both HMMALIGN+pplacer and PaPaRa+pplacer suffer
+
+\paragraph{Comparing placement accuracy.}  
+The metric used in my dissertation for measuring the accuracy of placement is the change in missing branch rate of the backbone tree before and after insertion of the query sequence (called \deltafn ).  More formally, if $FN$ is the number of missing branches in the backbone tree $T$, and $FN'$ is the number of missing branches in $T'$, then \deltafn$=FN'-FN$.  Figure~\ref{back:placement_error} shows an example of this computation.  Let the initial backbone tree have 0 FN.  After the insertion of the query sequence $s$ into $T$, $T'$ is missing bipartitions $\{As|BCDEFGH\}$ and $\{ABs|CDEFGH\}$ (bipartitions colored red in Fig.~\ref{back:placement_error}).  The resulting \deltafn~is 2.
+
+\textbf{Nam: discuss possible case of \deltafn~ being negative.}
+
 \begin{figure}[htbp]
 \centering
-{\includegraphics[width=0.80\textwidth]{sepp/hmmer_papara}}
-\caption[Comparison of HMMALIGN+pplacer and PaPaRa+pplacer.]{Comparison of HMMALIGN+pplacer and PaPaRa+pplacer under 3 different model conditions, ranked in order of increasing rate of evolution.  Thus, M4 is the slowest evolving dataset, and M2 is the fastest evolving dataset.  The number of sequences in the backbone set is 500 for all model conditions.} 
-\label{background:initial}
+{\includegraphics[width=0.60\textwidth]{background/unrooted_phylogeny_b}}
+\caption[Computing \deltafn~error of query sequence placement.]{\label{back:placement_error}An example computing the \deltafn~error of query sequence placement.  The backbone tree originally has 0 missing branches.  After insertion of the query sequence $s$, the estimated tree $T'$ is missing 2 bipartitions that are found in the true true (missing edges colored red).  Thus, the \deltafn~is 2.}
 \end{figure}
 
+% For the most likely placement\footnote{Multiple possible placements for
+% each read, along with the likelihood of each placement,
+% are also provided by pplacer.} of each fragmentary
+% read, I first calculate the number of missing branches compared to the 
+% reference tree. 
+% This number in isolation is hard to interpret, for at least two reasons.
+% In the case where \sate~alignment/tree is the input, the backbone tree itself
+% contains error. The error of the initial backbone tree is a lower bound on the
+% tree error after placement of reads (in fact it is a rather liberal lower bound,
+% as the optimal placement of fragments can still have errors higher than the
+% initial tree).
+% In the case where true or curated alignment/tree is 
+% the input, the initial tree has no
+% error, but I can still establish useful lower bounds of the tree error. 
+% This can be done by using the reference alignment of query sequences 
+% to be the backbone alignment as input to the \pplacer. 
+% The resulting placement of query sequences
+% is the best one can realistically hope for.
+
+% To account for the lower bounds described above,
+% I also define and report 
+% the ``delta error" for each technique,  as follows.
+% For each read $s$ placed on the \sate~backbone tree, 
+% I report the difference between
+% the number of missing branches of the initial 
+% backbone tree 
+% and the number of missing branches after placement of $s$.
+% When the backbone tree is 
+% the reference (true or curated) tree, 
+% I report the
+% difference between the number of missing branches of the tree produced by
+% placement of $s$ according to the 
+% reference alignment of $s$ to $S$ and 
+% the number of missing branches
+% of the tree after placement of $s$.
+% In all cases, 
+% the number of missing branches in each tree is defined with
+% respect to the reference tree for the taxa in the given tree.
+% Thus, the number of missing branches in the backbone trees is
+% defined by the reference tree on the set $S$ of backbone taxa, and the
+% number of missing branches in the tree produced by placing the
+% query sequence into the backbone tree is defined by the
+% reference tree on the set $S \cup \{s\}$.
+
+
+% Note that in the case where the backbone tree is the reference tree, 
+% the number of missing branches is
+% equal to the node distance between the correct placement of reads and
+% actual placements, the error used in the literature\cite{Berger2011,Matsen2010,Berger2011a}. 
+% However, this edge distance is not as meaningful as the 
+% number of missing branches with respect to either the true or
+% curated tree, since estimated trees will generally have error.
+
+\subsection{Metagenomic analyses}\label{back:metagenomic}
+\textbf{NAM:Add more formal definition, citations}.
+\paragraph{Taxonomic identification}\label{back:taxonomic_id}
 
 \textbf{NAM:Add more formal definition, citations}.
-\section{Metagenomic analyses}\label{back:metagenomic}
-
-\textbf{NAM:Add more formal definition, citations}.
-\subsection{Taxonomic identification}\label{back:taxonomic_id}
-
-\textbf{NAM:Add more formal definition, citations}.
-\subsection{Taxonomic profiling}\label{back:taxonomic_profiling}
-
+\paragraph{Taxonomic profiling}\label{back:taxonomic_profiling}
 \textbf{NAM:Add more formal definition, citations}
+\subsection{Ultra-large alignment estimation}\label{back:ultra_large}

@@ -29,6 +29,7 @@
 \usepackage{epstopdf}
 \usepackage{caption}
 \usepackage{subcaption}
+\usepackage{epigraph}
 \usepackage{verbatim}      	% Allows quoting source with commands.
 \usepackage{makeidx}       	% Package to make an index.
 \usepackage{psfig}         	% Allows inclusion of eps files.
@@ -44,7 +45,7 @@
 				% it out with a percent sign to remove
 				% the word draft before you re-run
 				% Makediss for the last time.
-
+%\pdfminorversion=5
 \author{Nam-phuong Duc Nguyen}  	% Required
 
 \address{3438 Shiraz Loop\\ Round Rock, Texas 78665}  % Required
@@ -239,6 +240,7 @@
 
 \newcommand{\cn}[1]{\texttt{\bslash #1}}
 \newcommand{\sate}{SAT\'{e}}
+\newcommand{\deltafn}{$\Delta_{FN}$}
 
 \makeatletter		% Starts section where @ is considered a letter
 			% and thus may be used in commands.
@@ -310,12 +312,11 @@ between the different sequences, and from these homologies,
 a phylogeny representing the evolutionary history of the species can be inferred.
 
 In the situation where an MSA has
-already been estimated on a set of sequences (called ``backbone alignment), new sequences (called ``query sequences) can be inserted into the MSA using a profile Hidden Markov Models (HMM), removing the need to re-estimate the MSA on the full set of sequences from scratch.  The basic algorithm for profile HMM alignment estimation is to compute an HMM from the backbone alignment, and then align the query sequences independently to the HMM, which in turn, defines an alignment of the query sequences to the backbone alignment.  I will show, however, that this technique suffers when the backbone alignment contains very evolutionarily divergent
-sequences~\ref{Mirarab2012}.  
+already been estimated on a set of sequences (called ``backbone alignment), new sequences (called ``query sequences) can be inserted into the MSA using a profile Hidden Markov Models (HMM), removing the need to re-estimate the MSA on the full set of sequences from scratch.  The basic algorithm for this approach is to first compute an HMM from the backbone alignment.  Next, the query sequences are inserted into the backbone alignment using the HMM.  This technique suffers, though, when the backbone alignment and query sequences are evolutionarily divergent~\cite{Mirarab2012}.  
 
-In this dissertation, I present a new machine learning technique called families of HMMs (fHMMs) that address this problem.  By using multiple HMMs instead of a single HMM to represent a backbone alignment, query sequences can be more accurately aligned to the backbone alignment.  I apply the fMMs to three different domains: phylogenetic placement, taxonomic profiling and identification, and MSA estimation.  In phylogenetic placement, the problem addressed is how to insert a query sequence into an existing phylogeny.  In taxonomic identification and profiling, the problem addressed is how to taxonomically classification a query sequence, and how to estimate a taxonomic profile on a set of sequences.  Finally, in MSA estimation, the problem is how to estimate an MSA on a set of sequences.
+In this dissertation, I present a new machine learning technique called families of HMMs (fHMMs) to address this problem.  By using multiple HMMs instead of a single HMM to represent a backbone alignment, query sequences can be more accurately aligned to the backbone alignment.  I apply the fMMs to three different problems: phylogenetic placement, taxonomic profiling and identification, and MSA estimation.  In phylogenetic placement, the problem addressed is how to insert a query sequence into an existing phylogeny.  In taxonomic identification and profiling, the problem addressed is how to taxonomically classification a query sequence, and how to estimate a taxonomic profile on a set of sequences.  Finally, in MSA estimation, the problem is how to estimate an MSA on a set of sequences.
 
-For each domain, I present a software pipeline that implements the fMMs that specifically addresses problems in the domain: SEPP for phylogenetic placement, TIPP for taxonomic profiling and identification, and UPP for MSA estimation.  I present simulation experiments to show that the fHMMs approaches result in improved accuracy compared to the single HMM approaches.  I show that SEPP results in more accurate phylogenetic placements compared to existing placement methods, and is more computationally efficient, both in memory and running time.  I show that TIPP more accurately classifies novel sequences, and estimates more accurate taxonomic profiles than leading methods on metagenomic datasets.  Finally, I show how UPP estimates ``de novo'' alignments, and is more accurate and efficient than than existing alignment methods.  I show that UPP can estimate a very accurate alignment on a dataset with 1,000,000 sequences in less than 2 days on a machine with 12 processors.
+For each problem, I present a software pipeline that implements the fMMs that is implemented specifically for that domain: SEPP for phylogenetic placement, TIPP for taxonomic profiling and identification, and UPP for MSA estimation.  I present simulation experiments to show that the fHMMs approaches result in improved accuracy compared to the single HMM approaches.  I show that SEPP results in more accurate phylogenetic placements compared to existing placement methods, and is more computationally efficient, both in peak memory usage and running time.  I show that TIPP more accurately classifies novel sequences, and estimates more accurate taxonomic profiles than leading methods on metagenomic datasets.  Finally, I show how UPP estimates ``de novo'' alignments, and is more accurate and efficient than than existing alignment methods.  I show that UPP can estimate a very accurate alignment on a dataset with 1,000,000 sequences in less than 2 days without the need of a supercomputer.
 
 \tableofcontents   % Table of Contents will be automatically
                    % generated and placed here.
