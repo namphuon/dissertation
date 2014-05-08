@@ -2,18 +2,17 @@
 \index{Background@\emph{Background}}\label{background}%
 In Section~\ref{back:phylogenetics}, I give a brief introduction to phylogenies and alignments and define basic definitions and concepts that will be used throughout my dissertation.  In Section~\ref{back:hmm}, I describe Hidden Markov Models (HMMs) and their use in alignment estimation. Finally, in Section~\ref{back:app}, I describe applications of HMMs in the realm of phylogenetic placement, metagenomic analyses, and ultra-large alignment estimation.
 
-\section{Phlogenies and phylogenetics}\label{back:phylogenetics}
-A \emph{phylogeny} is a graphical model that represents the evolutionary relationships between the different species.  One of the most common representations is using a \emph{rooted tree} - a directed acyclic graph.  Each leaf in the tree represents a species, and each internal node in the tree represents a \emph{speciation event}.  Speciation events are the process in which one species give rise to new lineages of species.  The root of the tree represents the most recent common ancestor of all the species.  Throughout my dissertation, I will refer to the leaves of the tree as species, taxa, or sequence, interchangeably.  Similarly, I refer to phylogenies as trees, though a phylogeny does not necessarily have to be tree-like, and more complicated representations do exist.
+\section{Phylogenetics}
+\emph{Phylogenetics} is the study of the evolutionary relationships between different organisms.  A typical molecular phylogenetic study begins by collecting biomolecular sequences (DNA, RNA, or amino acid sequences) from the species of interest.  The evolutionary relationship between the different characters in the sequence are inferred through an alignment.  From the alignment, a tree representing the evolutionary history between the different species are inferred.  The steps, estimating an alignment and estimating a tree, are core concepts used throughout my dissertation.  I now explain provide more background details on the alignment and the tree, and how one might go about estimating alignment and tree.
 
-Figure~\ref{back:phylo_tree}(a) shows an example of a rooted phylogenetic tree.  The relationship between the different species can be inferred from the tree.  For example, species $A$ and $B$ are more closely related than $A$ and $C$ because $A$ and $B$ share a more recent common ancestor (red node) than $A$ and $C$ (blue node). The example shown is a rooted tree, i.e., the direction of evolution is known, and the root of the tree represents the most recent common ancestor (MRCA) of all the species (black node).  In general, estimating the root of the tree is very difficult as most common methods for estimating phylogenies assume time-reversibility, and under these models, it is not possible to determine which node is the ancestor and which node is the descendent.  Thus, when I discuss phylogenies, I refer to unrooted trees (see Fig.~\ref{back:phylo_tree}(b)).
+\paragraph{Tree: graphical model of evolution}\label{back:phylogenetics}
+A \emph{phylogeny} is a graphical model that represents the evolutionary relationships between the different species.  One of the most common representations is using a \emph{rooted tree} - a directed acyclic graph.  Each leaf in the tree represents a species, and each internal node in the tree represents a \emph{speciation event}.  Speciation events are the process in which one species give rise to new lineages of species.  The root of the tree represents the most recent common ancestor of all the species.  Throughout my dissertation, I will refer to the leaves of the tree as species, taxa, or sequences, interchangeably.  Similarly, I refer to phylogenies as trees, though a phylogeny does not necessarily have to be tree-like, and more complicated representations such as phylogenetic networks do exist~\cite{todo}.
 
-\textbf{Nam:  Maybe add a little more about rooting, how it is done with outgroup, or it can be done under strong molecular clock assumption}
+Figure~\ref{back:phylo_tree}(a) shows an example of a rooted phylogenetic tree.  The relationship between the different species can be inferred from the tree.  For example, species $A$ and $B$ are more closely related than $A$ and $C$ because $A$ and $B$ share a more recent common ancestor (red node) than $A$ and $C$ (blue node). The example shown is a rooted tree, i.e., the direction of evolution is known, and the root of the tree represents the most recent common ancestor (MRCA) of all the species (black node).  In general, estimating the root of the tree is very difficult as most common methods for estimating phylogenies assume time-reversibility, and under these models, it is not possible to determine which node is the ancestor and which node is the descendant.  Thus, when I discuss phylogenies, I refer to unrooted trees.
 
-Each edge in the tree defines a bipartition.  For example, in Figure \ref{back:phylo_tree}(b), the red edge represents the bipartition $\{CD|ABEFGH\}$ (note that $\{CD|ABEFGH\}$ is identical to $\{ABEFGH|CD\}$).  Removal of this edge separates $CD$ from $ABEFGH$.  A tree can be uniquely identified by its set of bipartitions.  Thus, Figure \ref{back:phylo_tree}(b) can be uniquely identified by the bipartition set $\{\{AB|CDEFGH\}, \{CD|ABEFGH\}, \{EF|ABCDGH\},\{GH|ABCDEF\},$ $\{ABCD|EFGH\}\}$ (trival bipartitions that split a leaf node from the remaining leaves of the tree does not need to be listed as these bipartitions will be found in all trees that share the same leaf set).
-
-\textbf{Nam:  Discuss that these trees presented are binary trees, and that they can also contain polytomies.}
-
-
+Figure~\ref{back:phylo_tree}(b) shows an unrooted version of Figure~\ref{back:phylo_tree}(a).  An unrooted tree is a \emph{binary} tree if all inner nodes have a degree of 3.  If an inner node has degree greater than 3, it is called a \emph{polytomy}.  Polytomies represent evolutionary relationships that are not resolved.  Figure~\ref{back:poly} shows an example of a tree containing a polytomy.  
+%Polytomies arise when there is insufficient data to resolve the relationships between different organisms, or when rapid 
+\textbf{Nam:Build polytomy figure}
 \begin{figure}[htpb]
 \begin{subfigure}[htpb]{\textwidth}
   \centering
@@ -28,6 +27,29 @@ Each edge in the tree defines a bipartition.  For example, in Figure \ref{back:p
 \caption[Example of rooted and unrooted trees.]{\label{back:phylo_tree} Example of a) a rooted phylogenetic tree, and b) the unrooted version of the same tree.  In the rooted tree, the red node is the MRCA of species $A$ and $B$, and the blue node is the MRCA of $A$ and $C$.  The black node is the MRCA of all species in the tree.  In the unrooted tree, the red edge represents the bipartition $\{CD|ABEFGH\}$.}
 \end{figure}
 
+\paragraph{Multiple Sequence Alignment.}
+Biomolecular sequences are represented as a character string over an $n$-letter alphabet.  The most common alphabets are the 4-letter alphabets for nucleotides ($\{A,T,C,G\}$ for DNA and $\{A,U,C,G\}$ for RNA) and the 20-letter alphabet for amino acid sequences.  Because DNA is inherited from parent to child, the biomolecular sequences can be used to reconstruct the evolutionary history of present day organisms. %However, the ancestral organisms that gave rise to the current species are lost, thus, the evolutionary history of present day sequences must be inferred from sequences collected in the present; 
+%; sequences from ancestral populations are .  
+\textbf{Should add some extra background on uses of MSA, functional annotation of proteins/environmental reads, detecting conserved domains in proteins, sequence database search, remote homology detection, phylogeny estimation, etc... so that way can motivate why MSA is important}
+
+A fundamental process for understanding the relationship between the different sequences is to estimate an alignment on the sequences.  A \emph{Multiple Sequence Alignment} (MSA) is a data structure that represents the evolutionary relationships between the individual characters of a set of sequences.  An MSA on a set of sequences is defined by an $n x m$ matrix in which each row is a sequence interspersed with gap characters (``-'').  Gap characters represent historical insertion and deletion events (called ``indel'' events).  Each column in the matrix represents a site of common evolutionary origin.  If a pair of characters descended from the same ancestral character, then they are called \emph{homologous} and will be in the same column in the MSA  Homology is a transitive property, so if a nucleotide $A$ is homologous to nucleotide $B$ and $C$, then nucleotides $B$ and $C$ are also homologous to each other.  Figure~\ref{back:alignment} shows an example of a MSA.  The goal of an MSA is infer sites of shared homologies between the different sequences.
+
+\end{figure}[htpb]{\textwidth}
+\centering
+\includegraphics[width=0.60\linewidth]{{background/unrooted_phylogeny}.pdf}\\
+\caption[Example of a MSA.]{\label{back:alignment} Example of a MSA on S1 to Sn.  Originally, the sequences are unaligned and of different lengths.  The sequences are aligned by inserting gaps into the sequences such that homologous characters line up in the same site.}
+\end{figure}
+
+\paragraph{Simulation study.}
+There are many different methods for estimating an MSA and for estimating a phylogenetic tree.  Because it's impossible to know the true history for a set of sequences, simulation studies are performed to test the performance of the different methods.
+
+A typical molecular simulation study begins by generating a rooted model tree that represents the true evolutionary history of the set of sequences.  The model tree can be generated by using a phylogenetic tree generated from a previous study, or it can be generated by using a stochastic model of speciation (see ~\cite{Aldous2001} for review of tree models).  Once a model tree has been generated, a stochastic model of sequence evolution is selected~\cite{todo}, as well as a model of indel events~\cite{todo}.  These models include the rate of substitutions, as well as the rate of insertion and deletion events, and the size of the indels events, in terms of the number of characters inserted/deleted.  Once all the parameters have been selected, a random sequence is generated at the root, and it is simulated down the model tree with substitution and indel events (see Fig.~\ref{back:seq_evo}).  The true sequence is known at each internal node, as well as the history of the mutation patterns.  Thus, at the very end of the simulation, the true MSA and true phylogeny of the sequences are known and can be used to compare the accuracy of MSA and phylogeny estimation methods. 
+
+\end{figure}[htpb]{\textwidth}
+\centering
+\includegraphics[width=0.60\linewidth]{{background/seq_evolution}.pdf}\\
+\caption[Example of sequence evolution.]{\label{back:seq_evo} Example of sequence evolution down a model tree.  The original sequence at the root is ``ATCG''.  Through a series of insertions (colored blue), deletions (colored red), and substitutions (colored green), the root sequence evolves to 4 new sequences. The goal of a molecular phylogenetic study is to infer from the unaligned sequences the true alignment and phylogeny.}
+\end{figure}
 
 % \emph{Phylogenetics} is the study of the evolutionary relationship between different organisms, and phylogenies are a product of a phylogenetic study.  A typical molecular phylogenetic study begins by collecting biomolecular sequences (DNA, RNA, or amino acid sequences) from the species of interest.  The sequences come from a homologous
 
@@ -39,23 +61,51 @@ Each edge in the tree defines a bipartition.  For example, in Figure \ref{back:p
 
 % \textbf{NAM:Add more formal definition, citations; include uses of phylogenies in virology, medicine production, etc..., show unrooted trees, also, discuss models of sequence evolution, indels mutation?}.
 
-\subsection{MSA estimation}\label{back:alignment}
-\textbf{Nam:  fix this section, cover models of sequence evolution, definition of alignment, cite survey papers for sequence alignment, describe an MSA, and that an MSA is an estimation of the evolutionary relationship between the different characters.  Define a homology.  Build figure of a MSA}
+\section{MSA estimation}\label{back:alignment}
+Computing an MSA is typically formulated as an optimization problem of minimizing the dissimilarity between different sequences across the sites in the alignment.  One simple dissimilarity metric used is the sum-of-pairs (SP) score~\cite{todo}.  The SP score is computed by summing the total number of mismatches (pair of aligned ``non-gap'' characters that do not match) and indels (any ``non-gap'' character aligned to a ``gap'' character) over all pairs of sequences in the MSA.  Figure~\ref{back:sp_score}a shows the computation of the SP score for a pair of sequences.  Figure~\ref{back:sp_score}b shows the SP score for two MSAs on the same set sequences.  In this example, the bottom MSA has a lower SP score and would be considered more accurate under the SP score optimization criterion.  
 
-\paragraph{Comparing alignments.}  One pair of metrics that can be used to score the quality of an estimated MSA are the sum-of-pairs false negative (SPFN) and the sum-of-pairs false positive (SPFP) rates.  The SPFN rate is defined as the percentage of homologies in the true alignment that is not found in the estimated alignment, normalized by the total homologies in the true alignment.  Similarly, the SPFP rate is defined as the percentage of homologies in the estimated alignment that is not found in the true alignment, normalized by the total homologies in the estimated alignment.  
+\end{figure}[htpb]{\textwidth}
+\begin{figure}[htpb]
+\begin{subfigure}[htpb]{\textwidth}
+  \centering
+  \includegraphics[width=0.60\linewidth]{{background/sp_scoring}.pdf}\\
+  \caption[]{Computing SP score for 2 sequences.}
+\end{subfigure}
+\begin{subfigure}[htpb]{\textwidth}
+  \centering
+  \includegraphics[width=0.60\linewidth]{{background/sp_score}.pdf}\\
+  \caption[]{Computing SP score for an MSA.}
+\end{subfigure}
+\caption[Example of scoring MSAs.]{\label{back:sp_score} Example of a) computing the SP score for a pair of sequences, and b) the SP scores for two different MSAs of the same set of sequences.  In a), mismatches are highlighted red, and indels are highlighted blue.  The SP score is the sum of the total number of mismatches and indels.  In b) the SP scores for each pair of sequences are shown.  The total SP score for an MSA is the sum of all the pairwise SP scores.  In this example, the lower MSA has lower SP score and is more desirable under the SP score optimization criterion.}
+\end{figure}
+
+Computing an MSA that optimizes SP score (and many other similar distance metrics) is NP-complete~\cite{Wang1994,Bonizzoni2001} and thus, finding an exact solution is computationally intractable for large datasets.  Heuristics have been developed for MSA estimation(see~\cite{Notredame2002,Thompson2011} for survey and comparison of current methods), including progressive methods which build an MSA by progressively aligning pairs of sequences and then merging the alignments using tree~\cite{todo}, and iterative methods which combine progressive methods and iteration so that the estimated MSA is reused to estimate a better MSA~\cite{todo}.  However, these methods suffer in that they do not scale linearly with the number of sequences to be aligned~\cite{Notredame2002}.
+
+Another class of MSA estimation methods include methods that use profile Hidden Markov Models (HMM).  A profile HMM is a statistical representation of an MSA (see Section~\ref{back:hmm} for more indepth overview).  HMM methods take an existing MSA and computes a profile HMM from that MSA.  Sequences are then independently aligned to the profile.  Thus, profile HMM methods scale linearly with the number of sequences to align to an existing MSA.  However, the quality of the HMM is heavily impacted by the quality of the existing MSA, and on datasets containing evolutionary divergent sequences, the ability for HMM methods to accurately detect homologies degrades~\cite{Moriyama2006,Finn2010}.
+
+\paragraph{Comparing alignments.}  If a true alignment is known via simulation study, or a high quality curated alignment has been estimated, one can compare the quality of an estimated alignment by examining the percentage of shared and missing homologies with respect to the reference alignment.  One pair of metrics that can be used to score the quality of an estimated MSA are the sum-of-pairs false negative (SPFN) and the sum-of-pairs false positive (SPFP) rates~\cite{todo}.  The SPFN rate is defined as the total of homologies in the true alignment that are not found in the estimated alignment, normalized by the total homologies in the true alignment.  Similarly, the SPFP rate is defined as the total of homologies in the estimated alignment that are not found in the true alignment, normalized by the total homologies in the estimated alignment.  
 
 In my dissertation, I report both metrics, as well as the average of the two rates.  In addition, I also report the total column (TC) error rate on protein datasets.  This the number of columns in the true alignment that are exactly recovered in the estimated alignment, normalized by the total columns in the true alignment.  This metric is of interest when the goal is to examine how well alignment methods recover conserved domains in the alignment.
 
 %As one might expect, estimating every single homology correctly at a site when there are many sequences is difficult for all but the most conserved sites.  
 
-\textbf{Build figure showing how SPFN and SPFP is computed}
+%\textbf{Build figure showing how SPFN and SPFP is computed}
 
-\subsection{Phylogeny estimation}\label{back:alignment}
-\textbf{Nam:  fix this section, cover phylogeny estimation, definition of alignment, cite survey papers for sequence alignment}
+\section{Phylogeny estimation}\label{back:tree_estimation}
+Many different methods exist for estimating a phylogenetic tree from an MSA.  
 
-\paragraph{Comparing trees.}  One metric that can be used to compare tree topologies is by looking at the total number of bipartitions that are unique to each tree.  This metric is known as the Robinson–Foulds (RF) distance~\cite{RF}.  More formally, let $S_1$ be the set of bipartitions in $T_1$ and $S_2$ be the set of bipartitions in $T_2$, then the RF distance is defined as: $RF=|S_1\cup S_2|-|S_1\cap S_2|$. Typically, this metric is normalized by the total number of bipartitions in $T_1$ and $T_2$.  
 
-If the true tree is known, then the error of an estimated tree can be measured by percentage of bipartitions in the true tree that is not recovered in the estimated tree (the false negative rate), and by percentage of bipartitions in the estimated tree that is not in found in the true tree (the false positive rate).  More formally, if $T_1$ is the true tree and $T_2$ is the estimated tree, then the false negative (FN) rate is defined as: $FN=1-\frac{-|S_1\cap S_2|}{|S_1|}$.  Similarly, the false positive (FP) rate is defined as: $FP=1-\frac{|S_1\cap S_2|}{|S_2|}$.  The FN rate is also known as the missing branch rate as it is the percentage of branches that are missing from the estimated tree, and I will interchangeably use these two terminologies.  My dissertation primarily focuses on the missing branch rate when comparing the error of an estimated tree.
+\paragraph{Comparing trees.}  
+
+Trees can be compared by examining the edges that they share in common and the edges that are unique to each tree.  Each edge in the tree defines a bipartition.  For example, in Figure \ref{back:phylo_tree}(b), the red edge represents the bipartition $\{CD|ABEFGH\}$ (note that $\{CD|ABEFGH\}$ is identical to $\{ABEFGH|CD\}$).  Removal of this edge separates $CD$ from $ABEFGH$.  A tree can be uniquely identified by its set of bipartitions.  Thus, Figure \ref{back:phylo_tree}(b) can be uniquely identified by the bipartition set $\{\{AB|CDEFGH\}, \{CD|ABEFGH\}, \{EF|ABCDGH\},\{GH|ABCDEF\},$ $\{ABCD|EFGH\}\}$ (trival bipartitions that split a leaf node from the remaining leaves of the tree does not need to be listed as these bipartitions will be found in all trees that share the same leaf set).
+
+\textbf{Nam:  Discuss that these trees presented are binary trees, and that they can also contain polytomies.}
+
+One metric that can be used to compare tree topologies is by looking at the total number of bipartitions that are unique to each tree.  This metric is known as the Robinson–Foulds (RF) distance~\cite{RF}.  More formally, let $S_1$ be the set of bipartitions in $T_1$ and $S_2$ be the set of bipartitions in $T_2$, then the RF distance is defined as: $RF=|S_1\cup S_2|-|S_1\cap S_2|$. Typically, this metric is normalized by the total number of bipartitions in $T_1$ and $T_2$.  
+
+If the true tree is known, then the error of an estimated tree can be measured by the percentage of bipartitions in the true tree that are not recovered in the estimated tree (the false negative rate), and by the percentage of bipartitions in the estimated tree that are not in found in the true tree (the false positive rate), and the average of these two rates (Robinson–Foulds rate).  More formally, if $T_1$ is the true tree and $T_2$ is the estimated tree, then the false negative (FN) rate is defined as: $FN=1-\frac{|S_1\cap S_2|}{|S_1|}$.  Similarly, the false positive (FP) rate is defined as: $FP=1-\frac{|S_1\cap S_2|}{|S_2|}$.  For binary trees, $FN=FP=RF$.  The FN rate is also known as the missing branch rate as it is the percentage of branches that are missing from the estimated tree, and I will interchangeably use these two terminologies.  
+
+My dissertation primarily reports the missing branch rate as the error metric for comparing trees.  For simulated datasets, the model trees are binary trees, thus reporting missing branch rate is identical to reporting the FP and RF rates.  For biological datasets, the reference trees are ML trees estimated on a curated alignment, with only highly support edges retained.  Thus, the reference trees on biological datasets are non-binary, and the FP and FN rates will differ.  It is extremely easy for a method to estimate a tree with low FP rate by random chance; the method could estimate a highly unresolved tree.  It is exponentially more difficult for a method to estimate a tree with low FN rate by random chance.  Thus, reporting the FN rate for biological datasets is an appropriate measure. 
 
 Figure~\ref{back:tree_error} shows an example of a true tree and an estimated tree.  Each tree contains 5 bipartitions.  The bipartitions $\{AB|CDEFGH\}$ and $\{CD|ABEFGH\}$ are found in the true tree, but not present in the estimated tree.  Thus, missing branch rate 20\%.  Similarly, the bipartitions $\{AC|BDEFGH\}$ and $\{BD|ACEFGH\}$ are found in the estimated tree, but not present in the true tree, yielding an FP rate of 20\%.
 
@@ -69,6 +119,14 @@ Figure~\ref{back:tree_error} shows an example of a true tree and an estimated tr
 \label{back:tree_error}
 \end{figure}
 
+
+
+%Each edge in the tree defines a bipartition.  For example, in Figure \ref{back:phylo_tree}(b), the red edge represents the bipartition $\{CD|ABEFGH\}$ (note that $\{CD|ABEFGH\}$ is identical to $\{ABEFGH|CD\}$).  Removal of this edge separates $CD$ from $ABEFGH$.  A tree can be uniquely identified by its set of bipartitions.  Thus, Figure \ref{back:phylo_tree}(b) can be uniquely identified by the bipartition set $\{\{AB|CDEFGH\}, \{CD|ABEFGH\}, \{EF|ABCDGH\},\{GH|ABCDEF\},$ $\{ABCD|EFGH\}\}$ (trival bipartitions that split a leaf node from the remaining leaves of the tree does not need to be listed as these bipartitions will be found in all trees that share the same leaf set).
+
+%\textbf{Nam:  Discuss that these trees presented are binary trees, and that they can also contain polytomies.}
+
+
+
 %When working with empirical datasets, however, the true evolutionary history of the sequences is unknown.   Thus, we can only give a best estimate of the true tree by using the most accurate phylogeny estimation technique on reference trees are estimated on curated alignments.  
 
 % Start with a simplified view of sequence evolution.  There is a DNA sequence at the root.  It evolves down tree through series of substitutions and indels (Fig.~\ref{back:mutations}).  At the end of the process is are sequences that are homologous; they all descended from a common sequence.  A phylogenetic analyses will typically begin by collecting a set of homologous sequences from a common source, such as gene protein sequence.  This is the end result of the sequence evolution process; the history of the changes is lost.  Due to insertion and deletion events, the sequences are all of different length.  Typically a first step in estimating a phylogeny is to first estimate a \emph{Multiple Sequence Alignment} (MSA).  An MSA is a matrix where each row contains a sequence and each column represents shared homology for all biomolecular characters in that column.  
@@ -77,7 +135,7 @@ Figure~\ref{back:tree_error} shows an example of a true tree and an estimated tr
 
 \section{Hidden Markov Models}\label{back:hmm}
 
-\textbf{Add text discussing how to use profile HMM to align a sequence}
+\textbf{Add text discussing how to use profile HMM to align a sequence; add the figure of the profile HMM, discuss model (match state, insertion state, deletion state, states represent sites, discuss that it's a probabilistic model of an MSA, discuss how a sequence is aligned through dynamic programming}
 % \begin{figure}[htbp]
 % \centering
 % {\includegraphics[width=0.80\textwidth]{sepp/hmmer_papara}}
@@ -86,10 +144,12 @@ Figure~\ref{back:tree_error} shows an example of a true tree and an estimated tr
 % \end{figure}
 \section{Applications of profile HMMs}\label{back:app}
 \subsection{Phylogenetic placement}
-As I briefly mentioned in Chapter~\ref{intro}, phylogenetic placement is a method for inserting query sequences into an existing phylogenetic tree.  I now formally describe the phylogenetic placement problem as follows:
+As I briefly mentioned in Chapter~\ref{intro}, phylogenetic placement is a method for inserting query sequences into an existing phylogenetic tree.  This problem arises in the analyses of short DNA fragments taken from an environmental sample~\cite{todo}.
 
-\textbf{Add text before the formal description on why phylogenetic placement is necessary.  Good for analyzing short fragmentary reads because most traditional alignment methods assume global alignment, need local alignment for shorter fragments.  In addition, under the context of AToL, can build a large tree by aligning to only a backbone alignment instead of all sequences against all other sequences, and then inserting into an existing tree instead of estimating an entire tree on all sequences.  Thus phylogenetic placement may be a method for getting at a tree of all life.}
-%This method is useful in the analyses of short fragmentary reads.  When a dataset consists of sequences of hetrogenous lengths containing both full-length and fragmentary sequences, attempting to globally align the sequences together may result in very gappy alignments of the fragmentary reads.  A better approach is to estimate an alignment and tree on the full-length sequences, and then insert the remaining fragmentary sequences into tree.  The advantage
+I now formally describe the phylogenetic placement problem as follows:
+
+%\textbf{Add text before the formal description on why phylogenetic placement is necessary.  Good for analyzing short fragmentary reads because most traditional alignment methods assume global alignment, need local alignment for shorter fragments.  In addition, under the context of AToL, can build a large tree by aligning to only a backbone alignment instead of all sequences against all other sequences, and then inserting into an existing tree instead of estimating an entire tree on all sequences.  Thus phylogenetic placement may be a method for getting at a tree of all life.}
+%This method is useful in the analyses of short fragmentary reads.  When a dataset consists of sequences of heterogeneous lengths containing both full-length and fragmentary sequences, attempting to globally align the sequences together may result in very gappy alignments of the fragmentary reads.  A better approach is to estimate an alignment and tree on the full-length sequences, and then insert the remaining fragmentary sequences into tree.  The advantage
 
 %Many traditional alignment techniques perform global alignment and assume all the sequences are full-length and of roughly equal size.  When this assumption is violated, such as in the case of aligning fragmentary reads, global alignment methods may end up inserting many gaps to get the fragmentary sequence to align well to the full-length sequences~\cite{todo}.  
 
@@ -100,6 +160,8 @@ and query sequence $s$.
 \item Output: tree $T'$ containing $s$ obtained by adding $s$ as a leaf to
 $T$.
 \end{itemize}
+
+The query sequences
 
 Several methods have been developed for this problem using
 the following two steps:
@@ -221,7 +283,7 @@ The metric used in my dissertation for measuring the accuracy of placement is th
 \subsection{Metagenomic analyses}\label{back:metagenomic}
 Traditionally, bacterial species of interest from an environmental sample were identified by first culturing a clonal colony of the species in a laboratory environment, and then sequencing the genetic material directly from the colony using Next Generation Sequencing (NGS) technology.  The output of NGS technology is millions of short DNA fragments called reads.  As all the reads come from the same species, the fragments can be assembled together into longer sequences called contigs, and from the contigs, the genome of the original species could be estimated and the species could be taxonomically classified.
 
-However, an estimated 99\% of all microbial life cannot be cultured in lab~\cite{todo}, and thus the genomes of these organisms cannot be sequenced using traditional methods.  Metagenomic analyses provide a window into the organisms present in an evironmental sample by sequencing the genetic material directly from the sample.  This process poses a new problem, though, as now the reads come from all the species present in the sample, making assembly extremely difficult~\cite{todo}.  One of the fundamental challenges in a metagenomic study is the taxonomic classification of the metagenomic reads.  
+However, an estimated 99\% of all microbial life cannot be cultured in lab~\cite{todo}, and thus the genomes of these organisms cannot be sequenced using traditional methods.  Metagenomic analyses provide a window into the organisms present in an environmental sample by sequencing the genetic material directly from the sample.  This process poses a new problem, though, as now the reads come from all the species present in the sample, making assembly extremely difficult~\cite{todo}.  One of the fundamental challenges in a metagenomic study is the taxonomic classification of the metagenomic reads.  
 
 Providing taxonomic labels to metagenomic sequences requires
 extrapolating the knowledge contained in sequence databases to
